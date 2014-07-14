@@ -1,0 +1,209 @@
+<html>
+<head>
+<script src="js/recorder.js"></script>
+<script language="javascript">
+window.onload = init;
+var context;
+var bufferLoader;
+var source1;
+var source2;
+
+var audioInput = null,
+    realAudioInput = null,
+    inputPoint = null,
+    audioRecorder = null;
+var recIndex = 0;
+
+///////////////////////////////////////
+function BufferLoader(context, urlList, callback) {
+  this.context = context;
+  this.urlList = urlList;
+  this.onload = callback;
+  this.bufferList = new Array();
+  this.loadCount = 0;
+}
+
+BufferLoader.prototype.loadBuffer = function(url, index) {
+  // Load buffer asynchronously
+  var request = new XMLHttpRequest();
+  request.open("GET", url, true);
+  request.responseType = "arraybuffer";
+
+  var loader = this;
+
+  request.onload = function() {
+    // Asynchronously decode the audio file data in request.response
+    loader.context.decodeAudioData(
+      request.response,
+      function(buffer) {
+        if (!buffer) {
+          alert('error decoding file data: ' + url);
+          return;
+        }
+        loader.bufferList[index] = buffer;
+        if (++loader.loadCount == loader.urlList.length)
+          loader.onload(loader.bufferList);
+      },
+      function(error) {
+        console.error('decodeAudioData error', error);
+      }
+    );
+  }
+
+  request.onerror = function() {
+    alert('BufferLoader: XHR error');
+  }
+
+  request.send();
+}
+
+BufferLoader.prototype.load = function() {
+  for (var i = 0; i < this.urlList.length; ++i)
+  this.loadBuffer(this.urlList[i], i);
+}
+///////////////////////////////////////
+
+function doneEncoding( blob ) {
+    Recorder.setupDownload( blob, "myRecording" + ((recIndex<10)?"0":"") + recIndex + ".wav" );
+    recIndex++;
+}
+
+function init() {
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	context = new AudioContext();
+	
+	// Fix up prefixing
+	if (!navigator.getUserMedia)
+		navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+	if (!navigator.cancelAnimationFrame)
+		navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
+	if (!navigator.requestAnimationFrame)
+		navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
+
+	navigator.getUserMedia({audio:true}, gotStream, function(e) {
+		alert('Error getting audio');
+		console.log(e);
+	});
+	
+	
+	// Buffer Load
+	bufferLoader = new BufferLoader(
+		context,
+		[
+		'./The_Beatles_Let_it_be.mp3'
+		],
+		finishedLoading
+	);
+
+	bufferLoader.load();
+
+}
+
+function finishedLoading(bufferList) {
+	var btn1 = document.getElementById("btn1");
+	btn1.value = "record_start";
+	
+	source1 = context.createBufferSource();
+	source1.buffer = bufferList[0];
+
+	source1.connect(context.destination);
+}
+
+function gotStream(stream) {
+    inputPoint = context.createGain();
+
+    // Create an AudioNode from the stream.
+    realAudioInput = context.createMediaStreamSource(stream);
+    audioInput = realAudioInput;
+    audioInput.connect(inputPoint);
+
+//    audioInput = convertToMono( input );
+
+    analyserNode = context.createAnalyser();
+    analyserNode.fftSize = 2048;
+    inputPoint.connect( analyserNode );
+
+    audioRecorder = new Recorder( inputPoint );
+
+    zeroGain = context.createGain();
+    zeroGain.gain.value = 0.0;
+    inputPoint.connect( zeroGain );
+    zeroGain.connect( context.destination );
+    updateAnalysers();
+}
+
+function gotBuffers( buffers ) {
+    //var canvas = document.getElementById( "wavedisplay" );
+
+    //drawBuffer( canvas.width, canvas.height, canvas.getContext('2d'), buffers[0] );
+
+    // the ONLY time gotBuffers is called is right after a new recording is completed - 
+    // so here's where we should set up the download.
+    audioRecorder.exportWAV( doneEncoding );
+}
+
+function play_and_record()
+{
+	// Create two sources and play them both together.  
+	var btn1 = document.getElementById("btn1");
+	if( btn1.value == "record_start")
+	{
+		btn1.value = "record_end";
+		
+		audioRecorder.clear();
+        
+		source1.start(0);
+		audioRecorder.record();
+	}
+	else
+	{
+		btn1.value = "record_start";
+		
+		audioRecorder.stop();
+        audioRecorder.getBuffers( gotBuffers );
+		
+		source1.stop();
+	}
+	
+}
+
+function record()
+{
+	var btn2 = document.getElementById("btn2");
+	if( btn2.value == "record_start")
+	{
+		btn2.value = "record_end";
+		
+		audioRecorder.clear();
+        audioRecorder.record();
+	}
+	else
+	{
+		btn2.value = "record_start";
+		
+		audioRecorder.stop();
+        audioRecorder.getBuffers( gotBuffers );
+	}
+	
+	
+}
+
+function save() {
+    audioRecorder.exportWAV( doneEncoding );
+    // could get mono instead by saying
+    // audioRecorder.exportMonoWAV( doneEncoding );
+}
+
+</script>
+</head>
+<body>
+	<input id="btn1" type="button" value="" onclick="play_and_record();"/>
+	<input id="btn2" type="button" value="record_start" onclick="record();"/>
+	<input id="btn_save" type="button" value="create_link" onclick="save();"/>
+	
+	<a id="save" href="#">
+	download
+	</a>
+</body>
+
+</html>
