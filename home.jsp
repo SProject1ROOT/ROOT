@@ -22,6 +22,25 @@
       <script src="../../assets/js/html5shiv.js"></script>
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
+	<script language="javascript">
+	function check_submit()
+	{
+		var form = document.getElementById("form1");
+		var email = document.getElementById("id_email_id");
+		var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		
+		if(email==null || email.value.length<6){
+			alert("올바른 이메일을 입력하세요.");
+			return;
+		}
+		else if(!pattern.test(email.value)){
+			alert("올바른 이메일을 입력하세요.");
+			return;
+		}
+		form.submit();
+		
+	}
+	</script>
   </head>
 
   <body>
@@ -55,14 +74,15 @@
               </ul>
             </li-->
           </ul>
-          <form class="navbar-form navbar-right">
+          <form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp">
             <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
+              <input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
             </div>
             <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
+              <input type="password" name="password" placeholder="Password" class="form-control">
             </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
+            <button type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
+			<a href="signup.jsp" class="btn btn-primary" role="button">Sign up</a>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
