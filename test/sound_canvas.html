@@ -12,14 +12,20 @@
 window.onload = init;
 var context;
 var bufferLoader;
+var arrayBufferList = new Array();
+var playingBufferSource;
+var isPlaying = false;
+var gainNode = null;
+
+var pos = 0;
 
 ///////////////////////////////////////
 function BufferLoader(context, urlList, callback) {
-  this.context = context;
-  this.urlList = urlList;
-  this.onload = callback;
-  this.bufferList = new Array();
-  this.loadCount = 0;
+	this.context = context;
+	this.urlList = urlList;
+	this.onload = callback;
+	this.bufferList = new Array();
+	this.loadCount = 0;
 }
 
 BufferLoader.prototype.loadBuffer = function(url, index) {
@@ -62,7 +68,48 @@ BufferLoader.prototype.load = function() {
 }
 ///////////////////////////////////////
 
+function changeVolume(element)
+{
+	var volume = element.value;
+	var fraction = parseInt(element.value) / parseInt(element.max);
+	gainNode.gain.value = fraction * fraction;
+}
+
 function init() {
+
+	document.body.onkeyup = function(event){
+		event = event || window.event;
+		var keycode = event.charCode || event.keyCode;
+		if(keycode == 32)
+		{
+			if(isPlaying == false)
+			{
+				// play
+				gainNode = context.createGain();
+				
+				playingBufferSource = context.createBufferSource();
+				playingBufferSource.buffer = arrayBufferList[0];
+				
+				playingBufferSource.connect(gainNode);
+				
+				gainNode.connect(context.destination);
+				
+				//playingBufferSource.connect(context.destination);
+				playingBufferSource.start(-5);
+				
+				isPlaying = true;
+			}
+			else
+			{
+				playingBufferSource.stop(0);
+				
+				isPlaying = false;
+			}
+		
+		}
+	}
+
+
   // Fix up prefixing
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   context = new AudioContext();
@@ -70,8 +117,8 @@ function init() {
   bufferLoader = new BufferLoader(
     context,
     [
-      './Adelle_Someone_Like_You.mp3',
-	  './The_Beatles_Let_it_be.mp3'
+      '/audio/Adelle_Someone_Like_You.mp3',
+	  '/audio/The_Beatles_Let_it_be.mp3'
     ],
     finishedLoading
     );
@@ -83,7 +130,7 @@ function drawBuffer( width, height, context, data ) {
     var step = Math.ceil( data.length / width );
     var amp = height / 2;
 	
-	context.fillStyle = "silver";
+	context.fillStyle = "#333333";
 	context.clearRect(0,0,width,height);
     for(var i=0; i < width; i++){
         var min = 1.0;
@@ -103,32 +150,15 @@ function drawBuffer( width, height, context, data ) {
 
 
 function finishedLoading(bufferList) {
-  // Create two sources and play them both together.
-  var source1 = context.createBufferSource();
-  var source2 = context.createBufferSource();
-  source1.buffer = bufferList[0];
-  source2.buffer = bufferList[1];
-
-  //source1.connect(context.destination);
-  //source2.connect(context.destination);
-  //source1.start(0);
-  //source2.start(0);
-  
-  var canvas1 = document.getElementById( "wavedisplay1" );
-  var bufferdata1 = source1.buffer.getChannelData(0);
-  drawBuffer( canvas1.width, canvas1.height, canvas1.getContext('2d'), bufferdata1);
-  
-  var canvas2 = document.getElementById( "wavedisplay2" );
-  var bufferdata2 = source2.buffer.getChannelData(0);
-  drawBuffer( canvas2.width, canvas2.height, canvas2.getContext('2d'), bufferdata2);
-}
-
-function draw() {
-	var canvas = document.getElementById( "wavedisplay1" );
-	var context = canvas.getContext('2d');
+	// Create two sources and play them both together.
+	source1 = context.createBufferSource();
+	source1.buffer = bufferList[0];
 	
-    context.fillStyle = "silver";    
-    context.fillRect(0, 248, 1, 1);
+	arrayBufferList = bufferList;
+
+	var canvas1 = document.getElementById( "wavedisplay1" );
+	var bufferdata1 = source1.buffer.getChannelData(0);
+	drawBuffer( canvas1.width, canvas1.height, canvas1.getContext('2d'), bufferdata1);
 }
 
 </script>
@@ -136,9 +166,32 @@ function draw() {
 <body>
 	<!--input type="button" value="sound" onclick="sound();"/>
 	<input type="button" value="draw" onclick="draw();"/><br-->
-	<div><canvas id="wavedisplay1" height="100" width="500"/></div>
+	<div id="test1" style="position: relative;">
+		<canvas id="wavedisplay1" height="100" width="800" style="position: absolute; left: 0; top: 0; z-index: 0;" onmousedown="canvas_mousedown(this)"></canvas>
+		<canvas id="wavedisplay1_play" height="100" width="800" onmousedown="canvas_mousedown(this)" style="position: absolute; left: 0; top: 0; z-index: 1; background:transparent;"></canvas>
+		<script type='text/javascript'>
+			var canvas = document.getElementById('wavedisplay1_play');
+			var ctx = canvas.getContext('2d');
+			canvas.onmousedown = function(event) {
+				ctx.clearRect(0, 0, canvas.width, canvas.height)
+				pos = event.x;
+				
+				ctx.beginPath();
+				ctx.lineWidth = 1;
+				ctx.moveTo(pos, 0);
+				ctx.lineTo(pos, 0);
+				ctx.lineTo(pos, canvas.height);
+				
+				ctx.strokeStyle = "#ff0000";
+				ctx.stroke();
+			
+			}
+		</script>
+	</div>
+	<br><br><br><br><br><br><br><br>
+	<input type="range" min="0" max="100" value="100" oninput="changeVolume(this);">
 	<br>
-	<div><canvas id="wavedisplay2" height="100" width="500"/></div>
+	<input type="button" value="pos" onclick="alert(pos);">
 </body>
 
 </html>
