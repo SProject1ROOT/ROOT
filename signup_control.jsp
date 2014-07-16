@@ -55,7 +55,7 @@ try{
 </script>
 <%
 		}
-	
+	else{
 		sql="insert into users(email,nickname,password,confirm,level,image) values(?,?,?,?,?,?)";
 		pstmt=conn.prepareStatement(sql);
 		pstmt.setString(1,email);
@@ -72,6 +72,7 @@ try{
 	document.location.href="/home.jsp";
 </script>
 <%
+		}
 	}
 	
 }catch(Exception e){

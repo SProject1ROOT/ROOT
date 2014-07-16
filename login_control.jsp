@@ -5,7 +5,7 @@
 <html>
 <head></head>
 <body>
-<form name=login_control method=post action="home_login.jsp">
+<form name=login_control method=post action="home.jsp">
 <table width="550" border="1">
 <%
 
@@ -53,8 +53,11 @@ try{
 			}
 			else{
 				String nickname = rs.getString("nickname");
-				request.setAttribute("nickname",nickname);
-				pageContext.forward("/home_login.jsp");
+				String uid=Integer.toString(rs.getInt("uid"));
+				
+				session.setAttribute("nickname",nickname);
+				session.setAttribute("uid",uid);
+				response.sendRedirect((String)session.getAttribute("backpage"));
 			}
 		}
 	}

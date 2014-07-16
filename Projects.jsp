@@ -2,24 +2,47 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="shortcut icon" href="../../assets/ico/favicon.png">
-<title>Projects</title>
-<!-- Bootstrap core CSS -->
-<link href="css/bootstrap.css" rel="stylesheet">
-<!-- Custom styles for this template -->
-<link href="css/jumbotron.css" rel="stylesheet">
-<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
-    <![endif]-->
-</head>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+		<title>Projects</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="css/bootstrap.css" rel="stylesheet">
+		<!--link href="css/non-responsive.css" rel="stylesheet"-->
+		<!-- Custom styles for this template -->
+		<link href="css/jumbotron.css" rel="stylesheet">
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="../../assets/js/html5shiv.js"></script>
+			<script src="../../assets/js/respond.min.js"></script>
+		<![endif]-->
+		<script language="javascript">
+		function check_submit()
+			{
+			var form = document.getElementById("form1");
+			var email = document.getElementById("id_email_id");
+			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		
+			if(email==null || email.value.length<6){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			else if(!pattern.test(email.value)){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			form.submit();
+		
+			}
+		</script>
+	</head>
 <body>
+	<%session.setAttribute("backpage",request.getRequestURI());%>
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header">
@@ -28,38 +51,41 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Akdong Music</a>
+			<a class="navbar-brand" href="./home.jsp">Akdong Music</a>
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="./Projects.jsp">Projects</a></li>
-				<li><a href="#contact">Musics</a></li>
-				<li><a href="#contact">MyPage</a></li>
-				<!--li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li-->
+				<li><a href="./home.jsp">Home</a></li>
+				<li class="active"><a href="./Projects.jsp">Projects</a></li>
+				<li><a href="./Musics.jsp">Musics</a></li>
+				<li><a href="./mypage.jsp">MyPage</a></li>
 			</ul>
-			<form class="navbar-form navbar-right">
-				<div class="form-group">
-					<input type="text" placeholder="Email" class="form-control">
-				</div>
-				<div class="form-group">
-					<input type="password" placeholder="Password" class="form-control">
-				</div>
-				<button type="submit" class="btn btn-success">Sign in</button>
+			<%
+			if(session.getAttribute("nickname")==null){
+			%>
+          <form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp">
+            <div class="form-group">
+              <input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" name="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
+			<a href="signup.jsp" class="btn btn-primary" role="button">Sign up</a>
 			</form>
+			<%}
+			else{
+			%>         
+			<form class="navbar-form navbar-right">
+            <div class="form-group">
+              <h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
+            </div>
+            <a href="sessionLogout.jsp" class="btn btn-success" >Sign Out</a>
+          </form>	
+			<%
+			}
+			%>
 		</div>
-		<!--/.navbar-collapse -->
 	</div>
 </div>
 <div class="container">
@@ -67,36 +93,15 @@
 		<div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
 			<div class="well sidebar-nav">
 				<ul class="nav">
-					<li> Sidebar </li>
 					<li class="active">
-						<a href="#">Link</a>
+						<a href="./Projects.jsp" type="button" class="btn btn-primary">New Projects</a>
 					</li>
 					<li>
-						<a href="#">Link</a>
+						<br>
+						<img src="./image/ProjectIntro.PNG" alt="Projects Intro image" class="img-rounded">
 					</li>
-					<li>
-						<a href="#">Link</a>
-					</li>
-					<li>Sidebar</li>
-					<li>
-						<a href="#">Link </a>
-					</li>
-					<li>
-					<a href="#">Link</a>
-					</li>
-					<li>
-					<a href="#"></a>
-					</li>
-					<li>
-					Sidebar </li>
-					<li>
-					<a href="#">
-					Link </a>
-					</li>
-					<li>
-					<a href="#">
-					Link </a>
-					</li>
+					<br>
+					<li>음원을 병합하고 편집하기 위한 프로젝트를 생성하세요. 다양한 사용자들이 참여할 수 있으며 음원 추가 및 병합 기능이 제공됩니다.</li>
 				</ul>
 			</div>
 			<!--
@@ -107,76 +112,34 @@
         /span
         -->
 		<div class="col-xs-12 col-sm-9">
-			<div class="row">
-    <div class="col-lg-12">
-        <h2>
-            Projects1
-        </h2>
-        <p>
-            Projects1 입니다.
-        </p>
-        <p>
-            <a class="btn btn-default" href="#">
-                View details »
-            </a>
-        </p>
-    </div>
-    <div class="col-lg-12">
-        <h2>
-
-            Projects2
-
-        </h2>
-        <p>
-
-            Projects2 입니다.
-
-        </p>
-        <p>
-            <a class="btn btn-default" href="#">
-
-                View details »
-
-            </a>
-        </p>
-    </div>
-    <div class="col-lg-4">
-        <h2>
-
-            Projects3
-
-        </h2>
-        <p>
-
-            Projects3 입니다.
-
-        </p>
-        <p>
-            <a class="btn btn-default" href="#">
-
-                View details »
-
-            </a>
-        </p>
-    </div>
-
-</div>
+		<br>
+		<div class="col-lg-12">
+			<div class="col-md-3">
+				<img src="./image/ProjectNoImage.PNG" alt="Projects no image" class="img-rounded">
+			</div>
+			<div class="col-md-8">
+				<div class="row">
+					<h3>Projects1</h3>
+				</div>
+				<div class="row">
+					<small>This is Project1.</small>
+				</div>
+				<br>
+			
+				<div class="row">
+					<a class="btn btn-default" href="#" role="button">Likes</a>
+					<a class="btn btn-default" href="#" role="button">Share</a>
+					<a class="btn btn-default" href="#" role="button">▶</a>
+					<a class="btn btn-default" href="#" role="button">♥</a>
+				
+				</div>
+			</div>
 		</div>
-		<!--
-        /span
-        -->
 	</div>
-	<!--
-    /row
-    -->
+</div>
+</div>
 	<hr>
 	</hr>
-	<footer>
-	<p>
-		 © Company 2013
-	</p>
-	</footer>
-</div>
 <!--
 /.container
 -->
