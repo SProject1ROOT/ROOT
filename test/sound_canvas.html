@@ -8,65 +8,31 @@
 	}
 </style>
 
-<script language="javascript">
+<script type="text/javascript" src="/test/buffer_loader.js"></script>
+<script type="text/javascript">
 window.onload = init;
+
 var context;
-var bufferLoader;
-var arrayBufferList = new Array();
-var playingBufferSource;
+var playingBS;
 var isPlaying = false;
 var gainNode = null;
 
 var pos = 0;
 
-///////////////////////////////////////
-function BufferLoader(context, urlList, callback) {
-	this.context = context;
-	this.urlList = urlList;
-	this.onload = callback;
-	this.bufferList = new Array();
-	this.loadCount = 0;
+var startOffset = 0;
+var startTime = 0;
+var timer;
+
+var playStartTime;
+
+var AudioDataList = new Array();
+function AudioData(ab, s, v)
+{
+	this.audioBuffer = ab;
+	this.startPos = s;
+	this.volume = v;
 }
 
-BufferLoader.prototype.loadBuffer = function(url, index) {
-  // Load buffer asynchronously
-  var request = new XMLHttpRequest();
-  request.open("GET", url, true);
-  request.responseType = "arraybuffer";
-
-  var loader = this;
-
-  request.onload = function() {
-    // Asynchronously decode the audio file data in request.response
-    loader.context.decodeAudioData(
-      request.response,
-      function(buffer) {
-        if (!buffer) {
-          alert('error decoding file data: ' + url);
-          return;
-        }
-        loader.bufferList[index] = buffer;
-        if (++loader.loadCount == loader.urlList.length)
-          loader.onload(loader.bufferList);
-      },
-      function(error) {
-        console.error('decodeAudioData error', error);
-      }
-    );
-  }
-
-  request.onerror = function() {
-    alert('BufferLoader: XHR error');
-  }
-
-  request.send();
-}
-
-BufferLoader.prototype.load = function() {
-  for (var i = 0; i < this.urlList.length; ++i)
-  this.loadBuffer(this.urlList[i], i);
-}
-///////////////////////////////////////
 
 function changeVolume(element)
 {
@@ -84,93 +50,134 @@ function init() {
 		{
 			if(isPlaying == false)
 			{
+				startTime = context.currentTime;
+				
 				// play
 				gainNode = context.createGain();
 				
-				playingBufferSource = context.createBufferSource();
-				playingBufferSource.buffer = arrayBufferList[0];
+				playingBS = context.createBufferSource();
+				playingBS.buffer = AudioDataList[0].audioBuffer;
 				
-				playingBufferSource.connect(gainNode);
+				playingBS.connect(gainNode);
 				
 				gainNode.connect(context.destination);
 				
-				//playingBufferSource.connect(context.destination);
-				playingBufferSource.start(-5);
+				//playingBS.connect(context.destination);
+				
+				playingBS.start(0, (pos / 800) * playingBS.buffer.duration);
 				
 				isPlaying = true;
+				
+				//new_pos = pos;
+				
+				timer = window.setInterval("drawCanvasPlayBar()", 50);
+				
+				playStartTime = new Date().getMilliseconds();
 			}
 			else
 			{
-				playingBufferSource.stop(0);
+				playingBS.stop(0);
+				playingBS.disconnect();
+				gainNode.disconnect();
+				
+				startOffset += context.currentTime - startTime;
 				
 				isPlaying = false;
+				
+				window.clearInterval(timer);
+				drawCanvasPlayBar()
 			}
 		
 		}
+		else if(keycode == 32)
+		{
+		}
+		
+		
 	}
 
+	// Fix up prefixing
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	context = new AudioContext();
 
-  // Fix up prefixing
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
-  context = new AudioContext();
+	var bufferLoader = new BufferLoader(
+		context,
+		[
+			'/audio/damienrice.mp3'
+		],
+		function(bufferList){
+			for (var i = 0; i < bufferList.length; i++)
+				AudioDataList[i] = new AudioData(bufferList[i], 0, 0)
+			drawCanvasWave();
+		}
+	);
 
-  bufferLoader = new BufferLoader(
-    context,
-    [
-      '/audio/Adelle_Someone_Like_You.mp3',
-	  '/audio/The_Beatles_Let_it_be.mp3'
-    ],
-    finishedLoading
-    );
-
-  bufferLoader.load(); 
+	bufferLoader.load(); 
 }
 
-function drawBuffer( width, height, context, data ) {	
-    var step = Math.ceil( data.length / width );
-    var amp = height / 2;
+function drawCanvasPlayBar()
+{
+	var canvas = document.getElementById('wavedisplay_play');
+	var ctx = canvas.getContext('2d');
 	
-	context.fillStyle = "#333333";
-	context.clearRect(0,0,width,height);
-    for(var i=0; i < width; i++){
-        var min = 1.0;
-        var max = -1.0;
-        for (j=0; j<step; j++) {
-            var datum = data[(i*step)+j]; 
-            if (datum < min)
-                min = datum;
-            if (datum > max)
-                max = datum;
-        }
-        context.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	
+	if( isPlaying ) {
+		new_pos = pos + ((context.currentTime - startTime) / playingBS.buffer.duration * canvas.width);
 		
-		//alert(i + ", " + (0+min)*amp + ", " + 1 + ", " + Math.max(1,(max-min)*amp));
-    }
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+		ctx.moveTo(new_pos, 0);
+		ctx.lineTo(new_pos, 0);
+		ctx.lineTo(new_pos, canvas.height);
+		
+		ctx.strokeStyle = "#ff0000";
+		ctx.stroke();
+	}
+		
 }
 
-
-function finishedLoading(bufferList) {
-	// Create two sources and play them both together.
-	source1 = context.createBufferSource();
-	source1.buffer = bufferList[0];
-	
-	arrayBufferList = bufferList;
-
-	var canvas1 = document.getElementById( "wavedisplay1" );
-	var bufferdata1 = source1.buffer.getChannelData(0);
-	drawBuffer( canvas1.width, canvas1.height, canvas1.getContext('2d'), bufferdata1);
+function drawCanvasWave() {
+	for (var i = 0; i < AudioDataList.length; i++)
+	{
+		var canvas = document.getElementById("wavedisplay" + (i+1));
+		var ctx = canvas.getContext("2d");
+		var width = canvas.width;
+		var height = canvas.height;
+		var data = AudioDataList[i].audioBuffer.getChannelData(0);
+		
+		var step = Math.ceil( data.length / width );
+		var amp = height / 2;
+		
+		ctx.fillStyle = "grey";
+		//ctx.fillStyle = "#333366";
+		ctx.clearRect(0,0,width,height);
+		for(var i=0; i < width; i++){
+			var min = 1.0;
+			var max = -1.0;
+			for (j=0; j<step; j++) {
+				var datum = data[(i*step)+j]; 
+				if (datum < min)
+					min = datum;
+				if (datum > max)
+					max = datum;
+			}
+			ctx.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
+		}
+	}
 }
 
 </script>
+
 </head>
 <body>
 	<!--input type="button" value="sound" onclick="sound();"/>
 	<input type="button" value="draw" onclick="draw();"/><br-->
 	<div id="test1" style="position: relative;">
 		<canvas id="wavedisplay1" height="100" width="800" style="position: absolute; left: 0; top: 0; z-index: 0;" onmousedown="canvas_mousedown(this)"></canvas>
-		<canvas id="wavedisplay1_play" height="100" width="800" onmousedown="canvas_mousedown(this)" style="position: absolute; left: 0; top: 0; z-index: 1; background:transparent;"></canvas>
+		<canvas id="wavedisplay_play" height="100" width="800" onmousedown="canvas_mousedown(this)" style="position: absolute; left: 0; top: 0; z-index: 1; background:transparent;"></canvas>
 		<script type='text/javascript'>
-			var canvas = document.getElementById('wavedisplay1_play');
+			var canvas = document.getElementById('wavedisplay_play');
 			var ctx = canvas.getContext('2d');
 			canvas.onmousedown = function(event) {
 				ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -184,7 +191,6 @@ function finishedLoading(bufferList) {
 				
 				ctx.strokeStyle = "#ff0000";
 				ctx.stroke();
-			
 			}
 		</script>
 	</div>
@@ -192,6 +198,8 @@ function finishedLoading(bufferList) {
 	<input type="range" min="0" max="100" value="100" oninput="changeVolume(this);">
 	<br>
 	<input type="button" value="pos" onclick="alert(pos);">
+	<input type="button" value="<-" onclick="document.getElementById('wavedisplay1').left -= 5;">
+	<input type="button" value=">-" onclick="document.getElementById('wavedisplay1').left = 10;">
 </body>
 
 </html>
