@@ -6,6 +6,9 @@ function makeMusicCanvas(idx, canvas_height, canvas_width){		//태그 생성 및
 	dummy.css('top', (idx * 100) + "px");
 	dummy.css('z-index', 1);
 	dummy.css('position', 'absolute');
+		
+	var dragdrop_pos = -1;
+	var new_pos = 0;
 	
 	dummy.on({
 		mousedown: function (event) {
