@@ -8,6 +8,8 @@
 	}
 </style>
 
+<script src="make_element.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" src="/test/buffer_loader.js"></script>
 <script type="text/javascript">
 window.onload = init;
@@ -22,6 +24,10 @@ var pos = 0;
 var startOffset = 0;
 var startTime = 0;
 var timer;
+
+var dragdrop_pos = -1;
+var new_pos = 0;
+
 
 var playStartTime;
 
@@ -103,11 +109,14 @@ function init() {
 	var bufferLoader = new BufferLoader(
 		context,
 		[
-			'/audio/damienrice.mp3'
+			'/audio/damienrice.mp3',
+			'/audio/Adelle_Someone_Like_You.mp3'
 		],
 		function(bufferList){
-			for (var i = 0; i < bufferList.length; i++)
+			for (var i = 0; i < bufferList.length; i++) {
 				AudioDataList[i] = new AudioData(bufferList[i], 0, 0)
+				makeMusicCanvas(i, "100px", "400px");
+			}
 			drawCanvasWave();
 		}
 	);
@@ -138,13 +147,13 @@ function drawCanvasPlayBar()
 }
 
 function drawCanvasWave() {
-	for (var i = 0; i < AudioDataList.length; i++)
+	for (var a = 0; a < AudioDataList.length; a++)
 	{
-		var canvas = document.getElementById("wavedisplay" + (i+1));
+		var canvas = document.getElementById("wavedisplay" + (a));
 		var ctx = canvas.getContext("2d");
 		var width = canvas.width;
 		var height = canvas.height;
-		var data = AudioDataList[i].audioBuffer.getChannelData(0);
+		var data = AudioDataList[a].audioBuffer.getChannelData(0);
 		
 		var step = Math.ceil( data.length / width );
 		var amp = height / 2;
@@ -167,17 +176,81 @@ function drawCanvasWave() {
 	}
 }
 
+
+
 </script>
 
 </head>
 <body>
 	<!--input type="button" value="sound" onclick="sound();"/>
 	<input type="button" value="draw" onclick="draw();"/><br-->
-	<div id="test1" style="position: relative;">
-		<canvas id="wavedisplay1" height="100" width="800" style="position: absolute; left: 0; top: 0; z-index: 0;" onmousedown="canvas_mousedown(this)"></canvas>
-		<canvas id="wavedisplay_play" height="100" width="800" onmousedown="canvas_mousedown(this)" style="position: absolute; left: 0; top: 0; z-index: 1; background:transparent;"></canvas>
+	<br>
+	
+	<input type="button" value="Play" onclick="alert(pos);">
+	<input type="button" value="Stop" onclick="alert(pos);">
+	<input type="button" value="Zoom in" onclick="alert(pos);">
+	<input type="button" value="Zoom out" onclick="alert(pos);">
+	<input type="button" value="make" onclick="makeMusicCanvas('wavedisplay1', '100px', '400px', '0px')">
+	
+	<br><br><br>
+	<div id="canvas_container" style="position: relative;">
+		<!--canvas id="wavedisplay1" height="100" width="400" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas-->
+		<!--canvas id="wavedisplay2" height="100" width="400" style="position: absolute; left: 0; top: 100; z-index: 1;"></canvas-->
+		
+		<canvas id="wavedisplay_play" height="200" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent;"></canvas>
+		
 		<script type='text/javascript'>
-			var canvas = document.getElementById('wavedisplay_play');
+			var canvas = $('wavedisplay1'); //document.getElementById('wavedisplay1');
+			$('wavedisplay1').on({
+				mousedown: function (event) {
+					dragdrop_pos = event.x;
+				},
+				mousemove: function (event) {
+					if( dragdrop_pos != -1 )
+					{
+						if( new_pos >= 0 && AudioDataList[0].startPos + (event.x - dragdrop_pos) + this.width < 1000 )
+						{
+							new_pos = AudioDataList[0].startPos + (event.x - dragdrop_pos);
+							this.style.left = new_pos + "px";
+						}
+					}
+				},
+				mouseup: function (event) {
+					AudioDataList[0].startPos = new_pos;
+					dragdrop_pos = -1;
+				}
+			});
+			
+			/*canvas.onmousedown = function(event) {
+				dragdrop_pos = event.x;
+			}
+			canvas.onmousemove = function(event) 
+			{
+				if( dragdrop_pos != -1 )
+				{
+					if( new_pos >= 0 && AudioDataList[0].startPos + (event.x - dragdrop_pos) + this.width < 1000 )
+					{
+						new_pos = AudioDataList[0].startPos + (event.x - dragdrop_pos);
+						this.style.left = new_pos + "px";
+					}
+				}
+			}
+			canvas.onmouseup = function(event) {
+				AudioDataList[0].startPos = new_pos;
+				dragdrop_pos = -1;
+				
+				console.log("onmouseup startPos=" + this.style.left);
+			}*/
+			
+			/*canvas = document.getElementById('wavedisplay2');
+			canvas.onmousedown = function(event) {
+				dragdrop_list[1] = event.x;
+			}
+			canvas.onmouseup = function(event) {
+				dragdrop_list[1] = event.x;
+			}*/
+			
+			canvas = document.getElementById('wavedisplay_play');
 			var ctx = canvas.getContext('2d');
 			canvas.onmousedown = function(event) {
 				ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -194,12 +267,9 @@ function drawCanvasWave() {
 			}
 		</script>
 	</div>
-	<br><br><br><br><br><br><br><br>
 	<input type="range" min="0" max="100" value="100" oninput="changeVolume(this);">
 	<br>
-	<input type="button" value="pos" onclick="alert(pos);">
-	<input type="button" value="<-" onclick="document.getElementById('wavedisplay1').left -= 5;">
-	<input type="button" value=">-" onclick="document.getElementById('wavedisplay1').left = 10;">
+	
 </body>
 
 </html>
