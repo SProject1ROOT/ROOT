@@ -3,45 +3,44 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		<link rel="shortcut icon" href="../../assets/ico/favicon.png">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="../../assets/ico/favicon.png">
 
-		<title>Projects</title>
+<title>Musics</title>
 
-		<!-- Bootstrap core CSS -->
-		<link href="css/bootstrap.css" rel="stylesheet">
-		<!--link href="css/non-responsive.css" rel="stylesheet"-->
-		<!-- Custom styles for this template -->
-		<link href="css/jumbotron.css" rel="stylesheet">
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-			<script src="../../assets/js/html5shiv.js"></script>
-			<script src="../../assets/js/respond.min.js"></script>
-		<![endif]-->
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/jumbotron.css" rel="stylesheet">
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
 		<script language="javascript">
-		function check_submit()
-			{
-			var form = document.getElementById("form1");
-			var email = document.getElementById("id_email_id");
-			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+	function check_submit()
+	{
+		var form = document.getElementById("form1");
+		var email = document.getElementById("id_email_id");
+		var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
-			if(email==null || email.value.length<6){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			else if(!pattern.test(email.value)){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			form.submit();
+		if(email==null || email.value.length<6){
+			alert("올바른 이메일을 입력하세요.");
+			return;
+		}
+		else if(!pattern.test(email.value)){
+			alert("올바른 이메일을 입력하세요.");
+			return;
+		}
+		form.submit();
 		
-			}
-		</script>
-	</head>
+	}
+	</script>
+</head>
 <body>
 	<%session.setAttribute("backpage",request.getRequestURI());%>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -57,9 +56,21 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="./home.jsp">Home</a></li>
-				<li class="active"><a href="./Projects.jsp">Projects</a></li>
-				<li><a href="./Musics.jsp">Musics</a></li>
+				<li><a href="./Projects.jsp">Projects</a></li>
+				<li class="active"><a href="./Musics.jsp">Musics</a></li>
 				<li><a href="./mypage.jsp">MyPage</a></li>
+				<!--li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li-->
 			</ul>
 			<%
 			if(session.getAttribute("nickname")==null){
@@ -87,6 +98,7 @@
 			}
 			%>
 		</div>
+		<!--/.navbar-collapse -->
 	</div>
 </div>
 <div class="container">
@@ -94,15 +106,34 @@
 		<div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
 			<div class="well sidebar-nav">
 				<ul class="nav">
+					<li> Category </li>
 					<li class="active">
-						<a href="./Projects.jsp" type="button" class="btn btn-primary">New Projects</a>
+						<a href="#">Category1</a>
 					</li>
 					<li>
-						<br>
-						<img src="./image/ProjectIntro.PNG" alt="Projects Intro image" class="img-rounded">
+						<a href="#">Category2</a>
 					</li>
-					<br>
-					<li>음원을 병합하고 편집하기 위한 프로젝트를 생성하세요. 다양한 사용자들이 참여할 수 있으며 음원 추가 및 병합 기능이 제공됩니다.</li>
+					<li>
+						<a href="#">Category3</a>
+					</li>
+					<li>
+						<a href="#">Category4</a>
+					</li>
+					<li>
+						<a href="#">Category5</a>
+					</li>
+					<li>
+						<a href="#">Category6</a>
+					</li>
+					<li>
+						<a href="#">Category7</a>
+					</li>
+					<li>
+						<a href="#">Category8</a>
+					</li>
+					<li>
+						<a href="#">Category9</a>
+					</li>
 				</ul>
 			</div>
 			<!--
@@ -127,27 +158,24 @@ try{
 	Class.forName("com.mysql.jdbc.Driver");                       // 데이터베이스와 연동하기 위해 DriverManager에 등록한다.
 	conn=DriverManager.getConnection(db_url,db_id,db_pw);              // DriverManager 객체로부터 Connection 객체를 얻어온다.
 
-	String sql="select * from projects";
+	String sql="select * from musics";
 	pstmt=conn.prepareStatement(sql);
 
 	rs=pstmt.executeQuery();
 	int i=0;
 	while(rs.next()){
 		int id=rs.getInt("id");
-		int like=rs.getInt("like");
-		Date date_create=rs.getDate("date_create");
-		Date date_modify=rs.getDate("date_modify");
-		String image_path=rs.getString("image_path");
+		Date date=rs.getDate("date");
+		String music_path=rs.getString("music_path");
 		String description=rs.getString("description");
 		int play_cnt=rs.getInt("play_cnt");
 		String name=rs.getString("name");
+		int recording=rs.getInt("recording");
 		%>
+
 		<div class="col-xs-12 col-sm-9">
 		<br>
 		<div class="col-lg-12">
-			<div class="col-md-3">
-				<img src=<%=image_path %> alt="Projects no image" class="img-rounded">
-			</div>
 			<div class="col-md-8">
 				<div class="row">
 					<a href="Edit.jsp?id="+<%=id %>><%=name%></a>
@@ -161,13 +189,14 @@ try{
 					<a class="btn btn-default" href="#" role="button">Likes</a>
 					<a class="btn btn-default" href="#" role="button">Share</a>
 					<a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a>
-					<a class="btn btn-default" href="#" role="button">♥ <%=like %></a>
 				
 				</div>
 			</div>
 		</div>
 	</div>
-		
+		<!--
+        /span
+        -->	
 		<%
 		
 		/*
@@ -194,11 +223,18 @@ try{
 }
 
 		%>
-
-</div>
-</div>
+	</div>
+	<!--
+    /row
+    -->
 	<hr>
 	</hr>
+	<footer>
+	<p>
+		 © Company 2013
+	</p>
+	</footer>
+</div>
 <!--
 /.container
 -->
