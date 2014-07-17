@@ -1,0 +1,28 @@
+<html>
+<head>
+<script src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+
+function test (){
+	//$('body').append(createEle(1, 'hello, world!'));
+	$('body').append("<div>");
+}
+
+function makeMusicCanvas(name,canvas_height,canvas_width,cavas_top){		//태그 생성 및 추가
+	dummy = $('<canvas>');
+	dummy.attr("id", name)
+	dummy.css('height', canvas_height);
+	dummy.css('width', canvas_width);
+	dummy.css('top', canvas_width);
+	
+	$('body').append(dummy);
+}
+
+</script>
+</head>
+<body>
+
+<input type="button" value="make" onclick="makeMusicCanvas('wavedisplay1', '100px', '400px', '0px')">
+
+</body>
+</html>

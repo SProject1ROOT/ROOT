@@ -1,0 +1,33 @@
+function makeMessageElement(name,timestamp,content,pic_url,flag){		//태그 생성 및 추가
+	dummy = $('<div class="span8" style="float: none; margin: 0 auto;">\
+			<div class="row-fluid">\
+			<div class="span1">\
+			<a href="#" class="thumbnail"> \
+			<img id="pic_url" src="img/logo.png"\
+			alt="125x125">\
+			</a>\
+			</div>\
+			<div class="span11">\
+			<div class="row-fluid">\
+			<div id="timestamp" class="span4 offset8">2014년07월15</div>\
+			</div>\
+			<div class="row-fluid">\
+			<div id="name" class="span12">최창원</div>\
+			</div>\
+			</div>\
+			</div>\
+			<div class="row-fluid">\
+			<div id="content" class="span11 offset1">내용</div>\
+			</div>\
+	</div>');
+	dummy.find('#name').text(name);
+	dummy.find('#content').text(content);
+	dummy.find('#pic_url').attr('src',pic_url);
+	dummy.find('#timestamp').text(timestamp);
+	if(flag == TOP){
+		$('#scroll').prepend(dummy);
+	}else{
+		$('#scroll').append(dummy);
+	}
+	return dummy.height();
+}
