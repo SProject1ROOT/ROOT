@@ -54,9 +54,15 @@ try{
 			else{
 				String nickname = rs.getString("nickname");
 				String uid=Integer.toString(rs.getInt("uid"));
+				String email=rs.getString("email");
+				String level=Integer.toString(rs.getInt("level"));
+				String image=rs.getString("image");
 				
 				session.setAttribute("nickname",nickname);
 				session.setAttribute("uid",uid);
+				session.setAttribute("email",email);
+				session.setAttribute("level",level);
+				session.setAttribute("image",image);
 				response.sendRedirect((String)session.getAttribute("backpage"));
 			}
 		}

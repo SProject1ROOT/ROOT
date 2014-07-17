@@ -186,7 +186,7 @@ try{
 				<br>
 			
 				<div class="row">
-					<a class="btn btn-default" href="#" role="button">Likes</a>
+					<a class="btn btn-default" href="#" role="button">Add to Music Cart</a>
 					<a class="btn btn-default" href="#" role="button">Share</a>
 					<a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a>
 				
