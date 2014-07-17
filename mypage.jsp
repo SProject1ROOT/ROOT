@@ -1,4 +1,5 @@
-<%@ page contentType="text/html; charset=utf-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF8" pageEncoding="UTF8" %>
+<%@ page import = "java.sql.*" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -89,38 +90,16 @@
 </div>
 <div class="container">
 	<div class="row row-offcanvas row-offcanvas-right">
-		<div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
-			<div class="well sidebar-nav">
+		<div id="sidebar" class="col-xs-6 col-sm-2 sidebar-offcanvas" role="navigation">
+			<div class="well sidebar-nav"  style="display: inline-block;text-align: center;">
 				<ul class="nav">
-					<li> Sidebar </li>
+					<li> <h2>Profile</h2> </li>
 					<li class="active">
-						<a href="#">Link</a>
+						<img src=<%=session.getAttribute("image") %> alt="user image" class="img-rounded">
 					</li>
 					<li>
-						<a href="#">Link</a>
-					</li>
-					<li>
-						<a href="#">Link</a>
-					</li>
-					<li>Sidebar</li>
-					<li>
-						<a href="#">Link </a>
-					</li>
-					<li>
-					<a href="#">Link</a>
-					</li>
-					<li>
-					<a href="#"></a>
-					</li>
-					<li>
-					Sidebar </li>
-					<li>
-					<a href="#">
-					Link </a>
-					</li>
-					<li>
-					<a href="#">
-					Link </a>
+						<p class="lead"><%=session.getAttribute("nickname")%></p>
+						<p><a class="btn btn-lg btn-success" href="#">Level <%=session.getAttribute("level") %></a></p>
 					</li>
 				</ul>
 			</div>
@@ -131,58 +110,84 @@
 		<!--
         /span
         -->
+				<%
+			
+Connection conn = null;                                        // null로 초기화 한다.
+PreparedStatement pstmt = null;
+
+ResultSet rs=null;
+
+//try{
+	String db_url = "jdbc:mysql://210.118.74.213:3306/akmu";        // 사용하려는 데이터베이스명을 포함한 URL 기술
+	String db_id = "akmu";                                                    // 사용자 계정
+	String db_pw = "akmu0369";                                                // 사용자 계정의 패스워드
+
+	Class.forName("com.mysql.jdbc.Driver");                       // 데이터베이스와 연동하기 위해 DriverManager에 등록한다.
+	conn=DriverManager.getConnection(db_url,db_id,db_pw);              // DriverManager 객체로부터 Connection 객체를 얻어온다.
+%>
 		<div class="col-xs-12 col-sm-9">
 			<div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-4"  style="display: inline-block;text-align: center;">
         <h2>
-            Projects1
+            My Projects
         </h2>
+		<%  
+			String sql="select projects.id, projects.image_path from projects,users_projects where users_projects.user_id=? and users_projects.project_id=projects.id";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,(String)session.getAttribute("uid"));
+			
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				int project_id=rs.getInt("id");
+				String image_path=rs.getString("image_path");
+		%>
         <p>
-            Projects1 입니다.
-        </p>
-        <p>
-            <a class="btn btn-default" href="#">
-                View details »
+            <a class="btn btn-default" href="Edit.jsp?id=<%=project_id%>">
+                <img src=<%=image_path %> alt="Project_image" class="img-rounded">
             </a>
         </p>
+		
+		<% }%>
     </div>
-    <div class="col-lg-12">
+	<div class="col-lg-4"  style="display: inline-block;text-align: center;">
         <h2>
-
-            Projects2
-
+            My Musics
         </h2>
+		<%  
+			sql="select name, id from musics where user_id = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,(String)session.getAttribute("uid"));
+			
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				int id=rs.getInt("id");
+				String name=rs.getString("name");
+		%>
         <p>
-
-            Projects2 입니다.
-
+			<!--button type="button" class="btn btn-default btn-lg"><%=name%></button-->
+                <a class="btn btn-default btn-block" href="#?id=<%=id%>" role="button"><%=name%></a>
         </p>
-        <p>
-            <a class="btn btn-default" href="#">
-
-                View details »
-
-            </a>
-        </p>
+		<% }%>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-4"  style="display: inline-block;text-align: center;">
         <h2>
-
-            Projects3
-
+            Bookmarks
         </h2>
+		<%  
+			sql="select musics.id, musics.name from musics,users_bookmark where users_bookmark.user_id=? and users_bookmark.music_id = musics.id";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,(String)session.getAttribute("uid"));
+			
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				int id=rs.getInt("id");
+				String name=rs.getString("name");
+		%>
         <p>
-
-            Projects3 입니다.
-
+            <a class="btn btn-default btn-block" href="#?id=<%=id%>" role="button"><%=name%></a>
+       
         </p>
-        <p>
-            <a class="btn btn-default" href="#">
-
-                View details »
-
-            </a>
-        </p>
+		<% }%>
     </div>
 
 </div>
@@ -195,12 +200,6 @@
     /row
     -->
 	<hr>
-	</hr>
-	<footer>
-	<p>
-		 © Company 2013
-	</p>
-	</footer>
 </div>
 <!--
 /.container
