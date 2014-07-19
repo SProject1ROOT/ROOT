@@ -1,35 +1,39 @@
 function makeMusicCanvas(idx, canvas_height, canvas_width){		//태그 생성 및 추가
 	dummy = $('<canvas>');
-	dummy.attr("id", "wavedisplay" + idx)
-	dummy.css('height', canvas_height);
-	dummy.css('width', canvas_width);
+	dummy.attr("id", "wavedisplay" + idx);
+	dummy.attr('height', canvas_height);
+	dummy.attr('width', canvas_width);
 	dummy.css('top', (idx * 100) + "px");
 	dummy.css('z-index', 1);
 	dummy.css('position', 'absolute');
-		
-	var dragdrop_pos = -1;
-	var new_pos = 0;
-	
 	dummy.on({
 		mousedown: function (event) {
-			console.log("mousedown dragdrop_pos : " + dragdrop_pos);
-			dragdrop_pos = event.x;
+			//console.log("mousedown dragdrop_pos : " + Player.dragdrop_pos);
+			Player.dragdrop_pos = event.clientX;
+			Player.currentId = this.id;
 		},
 		mousemove: function (event) {
-			console.log("mousemove dragdrop_pos : " + dragdrop_pos);
-			if( dragdrop_pos != -1 )
+			//console.log("mousemove dragdrop_pos : " + Player.dragdrop_pos);
+			if( Player.dragdrop_pos != -1 && Player.currentId == this.id)
 			{
-				if( new_pos >= 0 && AudioDataList[0].startPos + (event.x - dragdrop_pos) + this.width < 1000 )
-				{
-					new_pos = AudioDataList[0].startPos + (event.x - dragdrop_pos);
-					this.style.left = new_pos + "px";
-				}
+				var x = AudioDataList[idx].startPos + (event.clientX - Player.dragdrop_pos);
+				var width = parseInt($(this).css('width'));
+				if( x < 0 ) x = 0;
+				if( x + width > 1000 ) x = 1000 - width;
+
+				//console.log("x:" + x + ", $(this).css.width:" + width);
+				Player.new_pos = x;//AudioDataList[idx].startPos + (event.clientX - Player.dragdrop_pos);
+				this.style.left = Player.new_pos + "px";
+				
+				Player.mouseover_on_canvas = false;
 			}
 		},
 		mouseup: function (event) {
-			console.log("mouseup dragdrop_pos : " + dragdrop_pos);
-			AudioDataList[0].startPos = new_pos;
-			dragdrop_pos = -1;
+			//console.log("mouseup dragdrop_pos : " + Player.dragdrop_pos);
+			AudioDataList[idx].startPos = Player.new_pos;
+			Player.dragdrop_pos = -1;
+			Player.new_pos = 0;
+			Player.currentId = "";
 		}
 	});
 	
