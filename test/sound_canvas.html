@@ -3,7 +3,7 @@
 <style>
 </style>
 <script src="make_element.js"></script>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/js/jquery.js"></script>
 <script type="text/javascript" src="/test/buffer_loader.js"></script>
 <script type="text/javascript">
 window.onload = init;
@@ -107,9 +107,7 @@ function init() {
 					}
 				}
 				
-				
 				document.getElementById('wavedisplay_play').style.zIndex = 100;
-				console.log("index:" + document.getElementById('wavedisplay_play').style.zIndex);
 				timer = window.setInterval("drawCanvasPlayBar()", 50);
 			}
 			else
@@ -126,9 +124,6 @@ function init() {
 						AudioDataList[i].gainNode.disconnect();
 					}
 				}
-				/*playingBS.stop(0);
-				playingBS.disconnect();
-				gainNode.disconnect();*/
 				
 				startOffset += context.currentTime - startTime;
 				
@@ -151,14 +146,14 @@ function init() {
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;
 	context = new AudioContext();
 
-	var arr_audio = ['/audio/home.mp3', '/audio/Dog_Sound.mp3'];
+	var arr_audio = ['/audio/home.mp3'];//['/audio/home.mp3'];//, '/audio/Dog_Sound.mp3'];
 	var bufferLoader = new BufferLoader(
 		context,
 		arr_audio,
 		function(bufferList){
 			for (var i = 0; i < bufferList.length; i++) {
 				
-				var width = bufferList[i].duration / Player.total_seconds * Player.total_length;
+				var width = bufferList[i].duration / Player.total_seconds * Player.total_width;
 				if( width > Player.total_width )
 				{
 					Player.total_width = width;
@@ -183,9 +178,9 @@ function drawCanvasPlayBar()
 	
 	//$('wavedisplay_play').css('z-index', 2);
 	
-	
-	if( isPlaying ) {
-		new_pos = pos + ((context.currentTime - startTime) / Player.total_seconds * canvas.width);
+	if( isPlaying ) { 
+		new_pos = pos + ((context.currentTime - startTime) / Player.total_seconds * Player.total_length);
+		//console.log("index:" + document.getElementById('wavedisplay_play').style.zIndex);
 		
 		ctx.beginPath();
 		ctx.lineWidth = 1;
@@ -256,6 +251,23 @@ function test()
 	//$('wavedisplay1').css('z-index', );
 }
 
+function zoomin()
+{
+	Player.total_seconds = 150;
+	for (var i = 0; i < AudioDataList.length; i++) {
+		var width = AudioDataList[i].duration / Player.total_seconds * Player.total_width;
+		if( width > Player.total_width )
+		{
+			Player.total_width = width;
+			document.getElementById('wavedisplay_play').width = width;
+		}
+		
+		AudioDataList[i].width = width;
+		document.getElementById("wavedisplay" + i).width = width;
+	}
+	drawCanvasWave();
+}
+
 </script>
 
 </head>
@@ -266,7 +278,7 @@ function test()
 	
 	<input type="button" value="Play" onclick="alert(pos);">
 	<input type="button" value="Stop" onclick="alert(pos);">
-	<input type="button" value="Zoom in" onclick="alert(pos);">
+	<input type="button" value="Zoom in" onclick="zoomin(pos);">
 	<input type="button" value="Zoom out" onclick="alert(pos);">
 	<input type="button" value="make" onclick="test()">
 	
@@ -279,10 +291,10 @@ function test()
 		<!--canvas id="wavedisplay1" height="100" width="400" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas-->
 		<!--canvas id="wavedisplay2" height="100" width="400" style="position: absolute; left: 0; top: 100; z-index: 1;"></canvas-->
 		
-		<canvas id="wavedisplay_play" class="container" height="300" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent; border:1px solid #000000;"></canvas>
+		<canvas id="wavedisplay_play" class="container" height="300" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent; border:1px solid silver;"></canvas>
 		
 		<script type='text/javascript'>
-			canvas = document.getElementById('wavedisplay_play');
+			/*canvas = document.getElementById('wavedisplay_play');
 			var ctx = canvas.getContext('2d');
 			canvas.onmousedown = function(event) {
 				if( isPlaying == false )
@@ -299,7 +311,7 @@ function test()
 					ctx.strokeStyle = "#ff0000";
 					ctx.stroke();
 				}
-			}
+			}*/
 		</script>
 	</div>
 	

@@ -5,7 +5,7 @@ function makeMusicCanvas(idx, canvas_height, canvas_width){		//태그 생성 및
 	dummy.attr('width', canvas_width);
 	dummy.css('top', (idx * 100) + "px");
 	dummy.css('z-index', 1);
-	dummy.css('border', "1px solid #663399");
+	dummy.css('border', "1px solid #333366");
 	dummy.css('position', 'absolute');
 	dummy.on({
 		mousedown: function (event) {
@@ -42,6 +42,8 @@ function makeMusicCanvas(idx, canvas_height, canvas_width){		//태그 생성 및
 					this.style.left = Player.new_pos + "px";
 					
 					Player.mouseover_on_canvas = false;
+					
+					playbar.style.visibility="hidden";
 				}
 			}
 			else
