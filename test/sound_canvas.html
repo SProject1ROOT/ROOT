@@ -1,13 +1,7 @@
 <html>
 <head>
 <style>
-	canvas { 
-		display: inline-block; 
-		background: white; 
-		box-shadow: 0px 0px 10px grey;
-	}
 </style>
-
 <script src="make_element.js"></script>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" src="/test/buffer_loader.js"></script>
@@ -15,9 +9,9 @@
 window.onload = init;
 
 var context;
-var playingBS;
+
 var isPlaying = false;
-var gainNode = null;
+
 
 var pos = 0;
 
@@ -30,19 +24,38 @@ var timer;
 var playStartTime;
 
 var AudioDataList = new Array();
-function AudioData(ab, s, v)
+function AudioData(filename, ab, w, s, v)
 {
+	this.filename = filename.substring(filename.lastIndexOf("/")+1, filename.length);
 	this.audioBuffer = ab;
 	this.startPos = s;
 	this.volume = v;
+	this.duration = ab.duration;
+	this.width = w;
+	
+	this.playingBS = null;
+	this.gainNode = null;
+	this.playing = false;
 }
 
+var Player = new AudioPlayer();
+function AudioPlayer()
+{
+	this.dragdrop_pos = -1;
+	this.new_pos = 0;
+	this.currentId = "";
+	this.total_width = 1000;
+	
+	this.total_length = 1000;
+	this.total_seconds = 300;
+}
 
 function changeVolume(element)
 {
 	var volume = element.value;
 	var fraction = parseInt(element.value) / parseInt(element.max);
-	gainNode.gain.value = fraction * fraction;
+	AudioDataList[0].gainNode.gain.value = fraction * fraction;
+	
 }
 
 function init() {
@@ -55,43 +68,77 @@ function init() {
 			if(isPlaying == false)
 			{
 				startTime = context.currentTime;
-				
-				// play
-				gainNode = context.createGain();
-				
-				playingBS = context.createBufferSource();
-				playingBS.buffer = AudioDataList[0].audioBuffer;
-				
-				playingBS.connect(gainNode);
-				
-				gainNode.connect(context.destination);
-				
-				//playingBS.connect(context.destination);
-				
-				playingBS.start(0, (pos / 800) * playingBS.buffer.duration);
-				
+				playStartTime = new Date().getMilliseconds();
 				isPlaying = true;
 				
-				//new_pos = pos;
+				// Setting
+				for (var i = 0; i < AudioDataList.length; i++)
+				{
+					AudioDataList[i].gainNode = context.createGain();
+					
+					AudioDataList[i].playingBS = context.createBufferSource();
+					AudioDataList[i].playingBS.buffer = AudioDataList[i].audioBuffer;					
+					AudioDataList[i].playingBS.connect(AudioDataList[i].gainNode);
+					
+					AudioDataList[i].gainNode.connect(context.destination);
+				}
 				
+				// Play
+				for (var i = 0; i < AudioDataList.length; i++)
+				{
+					if( pos == AudioDataList[i].startPos ) {
+						AudioDataList[i].playingBS.start(0);
+						
+					} else if(pos - AudioDataList[i].startPos < 0) {
+						
+						var whenStart = context.currentTime + (AudioDataList[i].startPos - pos) / Player.total_length * Player.total_seconds;
+						
+						console.log("whenStart : " + whenStart);
+						AudioDataList[i].playingBS.start(whenStart);
+					
+					} else
+					if(pos - AudioDataList[i].startPos > 0 && AudioDataList[i].startPos + AudioDataList[i].width > pos ) {
+						var offSet = (pos - AudioDataList[i].startPos) / Player.total_length * Player.total_seconds;
+						AudioDataList[i].playingBS.start(0, offSet);
+						
+						console.log("offSet : " + offSet);
+					} else {
+						AudioDataList[i].playingBS = null;
+					}
+				}
+				
+				
+				document.getElementById('wavedisplay_play').style.zIndex = 100;
+				console.log("index:" + document.getElementById('wavedisplay_play').style.zIndex);
 				timer = window.setInterval("drawCanvasPlayBar()", 50);
-				
-				playStartTime = new Date().getMilliseconds();
 			}
 			else
 			{
-				playingBS.stop(0);
+				// Stop
+				for (var i = 0; i < AudioDataList.length; i++)
+				{
+					if( AudioDataList[i].playingBS != null)
+					{
+						AudioDataList[i].playingBS.stop(0);
+						AudioDataList[i].playingBS.disconnect();
+						AudioDataList[i].playingBS = null;
+						
+						AudioDataList[i].gainNode.disconnect();
+					}
+				}
+				/*playingBS.stop(0);
 				playingBS.disconnect();
-				gainNode.disconnect();
+				gainNode.disconnect();*/
 				
 				startOffset += context.currentTime - startTime;
 				
 				isPlaying = false;
 				
 				window.clearInterval(timer);
-				drawCanvasPlayBar()
+				drawCanvasPlayBar();
+				
+				document.getElementById('wavedisplay_play').style.zIndex = 0;
 			}
-		
 		}
 		else if(keycode == 32)
 		{
@@ -104,16 +151,22 @@ function init() {
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;
 	context = new AudioContext();
 
+	var arr_audio = ['/audio/home.mp3', '/audio/Dog_Sound.mp3'];
 	var bufferLoader = new BufferLoader(
 		context,
-		[
-			'/audio/damienrice.mp3',
-			'/audio/Adelle_Someone_Like_You.mp3'
-		],
+		arr_audio,
 		function(bufferList){
 			for (var i = 0; i < bufferList.length; i++) {
-				AudioDataList[i] = new AudioData(bufferList[i], 0, 0)
-				makeMusicCanvas(i, "100px", "400px");
+				
+				var width = bufferList[i].duration / Player.total_seconds * Player.total_length;
+				if( width > Player.total_width )
+				{
+					Player.total_width = width;
+					document.getElementById('wavedisplay_play').width = width;
+				}
+				
+				AudioDataList[i] = new AudioData(arr_audio[i], bufferList[i], width, 0, 0);
+				makeMusicCanvas(i, 100, width);
 			}
 			drawCanvasWave();
 		}
@@ -126,11 +179,13 @@ function drawCanvasPlayBar()
 {
 	var canvas = document.getElementById('wavedisplay_play');
 	var ctx = canvas.getContext('2d');
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	//$('wavedisplay_play').css('z-index', 2);
+	
 	
 	if( isPlaying ) {
-		new_pos = pos + ((context.currentTime - startTime) / playingBS.buffer.duration * canvas.width);
+		new_pos = pos + ((context.currentTime - startTime) / Player.total_seconds * canvas.width);
 		
 		ctx.beginPath();
 		ctx.lineWidth = 1;
@@ -141,23 +196,29 @@ function drawCanvasPlayBar()
 		ctx.strokeStyle = "#ff0000";
 		ctx.stroke();
 	}
+	else
+	{
+		//$(canvas).css('z-index') = 0;
+	}
+	
 		
 }
 
 function drawCanvasWave() {
+	
 	for (var a = 0; a < AudioDataList.length; a++)
 	{
 		var canvas = document.getElementById("wavedisplay" + (a));
 		var ctx = canvas.getContext("2d");
+	
 		var width = canvas.width;
-		var height = canvas.height;
+		var height = canvas.height - 20;
 		var data = AudioDataList[a].audioBuffer.getChannelData(0);
-		
 		var step = Math.ceil( data.length / width );
 		var amp = height / 2;
 		
-		ctx.fillStyle = "grey";
 		//ctx.fillStyle = "#333366";
+		ctx.fillStyle = "silver";
 		ctx.clearRect(0,0,width,height);
 		for(var i=0; i < width; i++){
 			var min = 1.0;
@@ -169,12 +230,31 @@ function drawCanvasWave() {
 				if (datum > max)
 					max = datum;
 			}
-			ctx.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
+			ctx.fillRect(i,(1+min)*amp+20,1,Math.max(1,(max-min)*amp));
+			//ctx.fillRect(i,(1+min)*amp,1,Math.max(1,(max-min)*amp));
+			//console.log(i + ", " + (0+min)*amp + ", " + 1 + ", " + Math.max(1,(max-min)*amp));
 		}
+		
+		ctx.fillStyle = "#333366";
+		ctx.fillRect(0, 0, width, 20);
+		
+		ctx.fillStyle = "white";
+		ctx.font = 'bold 12px consolas';
+		ctx.textBaseline = 'bottom';
+		ctx.fillText(AudioDataList[a].filename, 8, 17);
 	}
+	
+	
+	
 }
 
-
+function test()
+{
+	
+	document.
+	console.log("index:" + wavedisplay_play.style.zIndex);
+	//$('wavedisplay1').css('z-index', );
+}
 
 </script>
 
@@ -188,85 +268,40 @@ function drawCanvasWave() {
 	<input type="button" value="Stop" onclick="alert(pos);">
 	<input type="button" value="Zoom in" onclick="alert(pos);">
 	<input type="button" value="Zoom out" onclick="alert(pos);">
-	<input type="button" value="make" onclick="makeMusicCanvas('wavedisplay1', '100px', '400px', '0px')">
+	<input type="button" value="make" onclick="test()">
+	
+	<input type="range" min="0" max="100" value="100" oninput="changeVolume(this);">
+	
+	<canvas id="playbar" height="80" width="1" style="position: absolute; left: 10; top: 0; z-index: 1000; background-color: #ff0000; visibility: hidden;" ></canvas>
 	
 	<br><br><br>
-	<div id="canvas_container" style="position: relative;">
+	<div id="canvas_container" style="position: relative; float: left; width: 1005px; height:350px; overflow-x:scroll; " >
 		<!--canvas id="wavedisplay1" height="100" width="400" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas-->
 		<!--canvas id="wavedisplay2" height="100" width="400" style="position: absolute; left: 0; top: 100; z-index: 1;"></canvas-->
 		
-		<canvas id="wavedisplay_play" height="200" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent;"></canvas>
+		<canvas id="wavedisplay_play" class="container" height="300" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent; border:1px solid #000000;"></canvas>
 		
 		<script type='text/javascript'>
-			var canvas = $('wavedisplay1'); //document.getElementById('wavedisplay1');
-			$('wavedisplay1').on({
-				mousedown: function (event) {
-					dragdrop_pos = event.x;
-				},
-				mousemove: function (event) {
-					if( dragdrop_pos != -1 )
-					{
-						if( new_pos >= 0 && AudioDataList[0].startPos + (event.x - dragdrop_pos) + this.width < 1000 )
-						{
-							new_pos = AudioDataList[0].startPos + (event.x - dragdrop_pos);
-							this.style.left = new_pos + "px";
-						}
-					}
-				},
-				mouseup: function (event) {
-					AudioDataList[0].startPos = new_pos;
-					dragdrop_pos = -1;
-				}
-			});
-			
-			/*canvas.onmousedown = function(event) {
-				dragdrop_pos = event.x;
-			}
-			canvas.onmousemove = function(event) 
-			{
-				if( dragdrop_pos != -1 )
-				{
-					if( new_pos >= 0 && AudioDataList[0].startPos + (event.x - dragdrop_pos) + this.width < 1000 )
-					{
-						new_pos = AudioDataList[0].startPos + (event.x - dragdrop_pos);
-						this.style.left = new_pos + "px";
-					}
-				}
-			}
-			canvas.onmouseup = function(event) {
-				AudioDataList[0].startPos = new_pos;
-				dragdrop_pos = -1;
-				
-				console.log("onmouseup startPos=" + this.style.left);
-			}*/
-			
-			/*canvas = document.getElementById('wavedisplay2');
-			canvas.onmousedown = function(event) {
-				dragdrop_list[1] = event.x;
-			}
-			canvas.onmouseup = function(event) {
-				dragdrop_list[1] = event.x;
-			}*/
-			
 			canvas = document.getElementById('wavedisplay_play');
 			var ctx = canvas.getContext('2d');
 			canvas.onmousedown = function(event) {
-				ctx.clearRect(0, 0, canvas.width, canvas.height)
-				pos = event.x;
-				
-				ctx.beginPath();
-				ctx.lineWidth = 1;
-				ctx.moveTo(pos, 0);
-				ctx.lineTo(pos, 0);
-				ctx.lineTo(pos, canvas.height);
-				
-				ctx.strokeStyle = "#ff0000";
-				ctx.stroke();
+				if( isPlaying == false )
+				{
+					ctx.clearRect(0, 0, canvas.width, canvas.height)
+					pos = event.clientX-8;
+					
+					ctx.beginPath();
+					ctx.lineWidth = 1;
+					ctx.moveTo(pos, 0);
+					ctx.lineTo(pos, 0);
+					ctx.lineTo(pos, canvas.height);
+					
+					ctx.strokeStyle = "#ff0000";
+					ctx.stroke();
+				}
 			}
 		</script>
 	</div>
-	<input type="range" min="0" max="100" value="100" oninput="changeVolume(this);">
-	<br>
 	
 </body>
 
