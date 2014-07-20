@@ -28,15 +28,46 @@
 				out.println("<script>history.go(-1);</script>");
 			}
 		
+	Connection conn = null;                                        // null로 초기화 한다.
+	PreparedStatement pstmt = null;
+	
+	ResultSet rs=null;
+	
+	if(request.getParameter("project_id")==null){
+				out.println("<script>alert('로그인 해주세요.');</script>");
+				out.println("<script>history.go(-1);</script>");
+	}
+	
+	int id=Integer.parseInt((String)request.getParameter("project_id"));
+	
+	//try{
+		String db_url = "jdbc:mysql://210.118.74.213:3306/akmu";        // 사용하려는 데이터베이스명을 포함한 URL 기술
+		String db_id = "akmu";                                                    // 사용자 계정
+		String db_pw = "akmu0369";     
+
+		Class.forName("com.mysql.jdbc.Driver");                       // 데이터베이스와 연동하기 위해 DriverManager에 등록한다.
+		conn=DriverManager.getConnection(db_url,db_id,db_pw);
 		
+		String sql="select * from projects where id=?";
+		pstmt.setInt(1,id);
+		
+		rs=pstmt.executeQuery();
+		String image_path="";
+		String description="";
+		String name="";
+		
+		while(rs.next()){
+			image_path=rs.getString("image_path");
+			description=rs.getString("description");
+			name=rs.getString("name");
+		}
 	%>
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>樂動뮤직</h1>
-        <p>다양한 음원 병합 및 공유 기능을 제공하며,
-		별도의 다운로드 및 설치없이 웹 상에서 사용가능 하도록 제공합니다.</p>
-        <p><a class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+        <h1><%=name %></h1>
+        <p><%=description %></p>
+        <p><img src=<%= image_path%> alt="Project_image" class="img-rounded" </p>
       </div>
     </div>
 

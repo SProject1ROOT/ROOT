@@ -142,7 +142,7 @@ ResultSet rs=null;
 				String image_path=rs.getString("image_path");
 		%>
         <p>
-            <a class="btn btn-default" href="Edit.jsp?id=<%=project_id%>">
+            <a class="btn btn-default" href="Edit.jsp?project_id=<%=project_id%>">
                 <img src=<%=image_path %> alt="Project_image" class="img-rounded">
             </a>
         </p>

@@ -79,7 +79,7 @@
 			<div class="well sidebar-nav">
 				<ul class="nav">
 					<li class="active">
-						<a href="./Edit.jsp?id=" type="button" class="btn btn-primary">New Projects</a>
+						<a href="./Edit.jsp?project_id=" type="button" class="btn btn-primary">New Projects</a>
 					</li>
 					<li>
 						<br>
@@ -135,7 +135,7 @@ try{
 			<div class="col-xs-4 navbar-collapse collapse">
 			
 				<ul class="nav navbar-nav">
-					<a href="Edit.jsp?id="+<%=id %>><%=name%></a>
+					<a href="Edit.jsp?project_id="+<%=id %>><%=name%></a>
 				</ul>
 				<br>
 				<br>
