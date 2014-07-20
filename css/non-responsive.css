@@ -38,8 +38,8 @@ body {
   padding-bottom: 15px;
   background-color: #eee;
   border: 1px solid #ddd;
-  background-color: rgba(86,61,124,.15);
-  border: 1px solid rgba(86,61,124,.2);
+  background-color: transparent !important;
+  border: 1px solid transparent !important;;
 }
 
 .container .navbar-header,
@@ -78,7 +78,11 @@ body {
   float: left;
 }
 .navbar-nav > li > a {
-  padding: 15px;
+  padding: 10px;
+  margin-top : 5px;
+  margin-bottom : 5px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 /* Redeclare since we override the float above */

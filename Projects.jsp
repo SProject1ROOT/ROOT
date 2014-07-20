@@ -23,61 +23,7 @@
 			<script src="../../assets/js/respond.min.js"></script>
 		<![endif]-->
 		<script language="javascript">
-		function check_submit()
-			{
-			//var form = document.getElementById("form1");
-			var email = document.getElementById("id_email_id");
-			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
-			if(email==null || email.value.length<6){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			else if(!pattern.test(email.value)){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			
-			var $form =  $('<form></form>');
-			$form.attr('action', 'order.asp');
-			$form.attr('method', 'post');
-			$form.attr('target', 'iFrm');
-			$form.appendTo('body');
-			
-			var idx = $('<input type="hidden" value="<%=idx%>" name="idx">');
-			var page = $('<input type="hidden" value="<%=page%>" name="page">');
-			var category = $('<input type="hidden" value="<%=category%>" name="category">');
-			var keyfield = $('<input type="hidden" value="<%=keyfield%>" name="keyfield">');
-			var keyword = $('<input type="hidden" value="<%=keyword%>" name="keyword">');
- 
-			$form.append(idx).append(page).append(category).append(keyfield).append(keyword);
-			$form.submit();
-			
-			
-			//var form = document.createElement('form1');
-			
-			
-			//form.submit();
-		
-			}
-			
-		function signup_submit()
-			{
-			var form = document.getElementById("form1");
-			var email = document.getElementById("id_email_id");
-			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-		
-			if(email==null || email.value.length<6){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			else if(!pattern.test(email.value)){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			form.submit();
-		
-			}
 		</script>
 	</head>
 <body>
@@ -129,11 +75,11 @@
 </div>
 <div class="container">
 	<div class="row row-offcanvas row-offcanvas-right">
-		<div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+		<div id="sidebar" class="col-xs-6 col-xs-3 sidebar-offcanvas" role="navigation">
 			<div class="well sidebar-nav">
 				<ul class="nav">
 					<li class="active">
-						<a href="./Projects.jsp" type="button" class="btn btn-primary">New Projects</a>
+						<a href="./Edit.jsp?id=" type="button" class="btn btn-primary">New Projects</a>
 					</li>
 					<li>
 						<br>
@@ -180,28 +126,31 @@ try{
 		int play_cnt=rs.getInt("play_cnt");
 		String name=rs.getString("name");
 		%>
-		<div class="col-xs-12 col-sm-9">
+		<div class="col-xs-12 col-xs-9">
 		<br>
-		<div class="col-lg-12">
-			<div class="col-md-3">
+		<div class="col-xs-12">
+			<div class="col-xs-4">
 				<img src=<%=image_path %> alt="Projects no image" class="img-rounded">
 			</div>
-			<div class="col-md-8">
-				<div class="row">
-					<a href="Edit.jsp?id="+<%=id %>><%=name%></a>
-				</div>
-				<div class="row">
-					<small><%=description %></small>
-				</div>
-				<br>
+			<div class="col-xs-4 navbar-collapse collapse">
 			
-				<div class="row">
-					<a class="btn btn-default" href="#" role="button">Likes</a>
-					<a class="btn btn-default" href="#" role="button">Share</a>
-					<a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a>
-					<a class="btn btn-default" href="#" role="button">♥ <%=like %></a>
+				<ul class="nav navbar-nav">
+					<a href="Edit.jsp?id="+<%=id %>><%=name%></a>
+				</ul>
+				<br>
+				<br>
+				<ul class="nav navbar-nav">
+					<small><%=description %></small>
+				</ul>
+				<br>
+				<br>
+				<ul class="nav navbar-nav">
+					<li><a class="btn btn-default" href="#" role="button">Likes</a></li>
+					<li><a class="btn btn-default" href="#" role="button">Share</a></li>
+					<li><a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a></li>
+					<li><a class="btn btn-default" href="#" role="button">♥ <%=like %></a></li>
 				
-				</div>
+				</ul>
 			</div>
 		</div>
 	</div>

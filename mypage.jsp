@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="shortcut icon" href="../../assets/ico/favicon.png">
@@ -14,6 +14,7 @@
 <link href="css/bootstrap.css" rel="stylesheet">
 <!-- Custom styles for this template -->
 <link href="css/jumbotron.css" rel="stylesheet">
+<link href="css/non-responsive.css" rel="stylesheet">
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
       <script src="../../assets/js/html5shiv.js"></script>
@@ -90,7 +91,7 @@
 </div>
 <div class="container">
 	<div class="row row-offcanvas row-offcanvas-right">
-		<div id="sidebar" class="col-xs-6 col-sm-2 sidebar-offcanvas" role="navigation">
+		<div id="sidebar" class="col-xs-6 col-xs-2 sidebar-offcanvas" role="navigation">
 			<div class="well sidebar-nav"  style="display: inline-block;text-align: center;">
 				<ul class="nav">
 					<li> <h2>Profile</h2> </li>
@@ -125,9 +126,8 @@ ResultSet rs=null;
 	Class.forName("com.mysql.jdbc.Driver");                       // 데이터베이스와 연동하기 위해 DriverManager에 등록한다.
 	conn=DriverManager.getConnection(db_url,db_id,db_pw);              // DriverManager 객체로부터 Connection 객체를 얻어온다.
 %>
-		<div class="col-xs-12 col-sm-9">
-			<div class="row">
-    <div class="col-lg-4"  style="display: inline-block;text-align: center;">
+		<div class="col-xs-12 col-xs-9">
+    <div class="col-xs-4"  style="display: inline-block;text-align: center;">
         <h2>
             My Projects
         </h2>
@@ -149,7 +149,7 @@ ResultSet rs=null;
 		
 		<% }%>
     </div>
-	<div class="col-lg-4"  style="display: inline-block;text-align: center;">
+	<div class="col-xs-4"  style="display: inline-block;text-align: center;">
         <h2>
             My Musics
         </h2>
@@ -169,7 +169,7 @@ ResultSet rs=null;
         </p>
 		<% }%>
     </div>
-    <div class="col-lg-4"  style="display: inline-block;text-align: center;">
+    <div class="col-xs-4"  style="display: inline-block;text-align: center;">
         <h2>
             Bookmarks
         </h2>
@@ -190,7 +190,6 @@ ResultSet rs=null;
 		<% }%>
     </div>
 
-</div>
 		</div>
 		<!--
         /span
