@@ -5,7 +5,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<link rel="shortcut icon" href="../../assets/ico/favicon.png">
@@ -14,7 +14,7 @@
 
 		<!-- Bootstrap core CSS -->
 		<link href="css/bootstrap.css" rel="stylesheet">
-		<!--link href="css/non-responsive.css" rel="stylesheet"-->
+		<link href="css/non-responsive.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
 		<link href="css/jumbotron.css" rel="stylesheet">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -24,6 +24,44 @@
 		<![endif]-->
 		<script language="javascript">
 		function check_submit()
+			{
+			//var form = document.getElementById("form1");
+			var email = document.getElementById("id_email_id");
+			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		
+			if(email==null || email.value.length<6){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			else if(!pattern.test(email.value)){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			
+			var $form =  $('<form></form>');
+			$form.attr('action', 'order.asp');
+			$form.attr('method', 'post');
+			$form.attr('target', 'iFrm');
+			$form.appendTo('body');
+			
+			var idx = $('<input type="hidden" value="<%=idx%>" name="idx">');
+			var page = $('<input type="hidden" value="<%=page%>" name="page">');
+			var category = $('<input type="hidden" value="<%=category%>" name="category">');
+			var keyfield = $('<input type="hidden" value="<%=keyfield%>" name="keyfield">');
+			var keyword = $('<input type="hidden" value="<%=keyword%>" name="keyword">');
+ 
+			$form.append(idx).append(page).append(category).append(keyfield).append(keyword);
+			$form.submit();
+			
+			
+			//var form = document.createElement('form1');
+			
+			
+			//form.submit();
+		
+			}
+			
+		function signup_submit()
 			{
 			var form = document.getElementById("form1");
 			var email = document.getElementById("id_email_id");

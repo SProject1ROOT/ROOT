@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../assets/ico/favicon.png">
@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.css" rel="stylesheet">
-	<!--link href="css/non-responsive.css" rel="stylesheet"-->
+	<link href="css/non-responsive.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/jumbotron.css" rel="stylesheet">
 
@@ -23,23 +23,36 @@
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
 	<script language="javascript">
-	function check_submit()
-	{
-		var form = document.getElementById("form1");
-		var email = document.getElementById("id_email_id");
-		var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		function check_submit()
+			{
+			//var form = document.getElementById("form1");
+			var email = document.getElementById("id_email_id");
+			var password = document.getElementById("password");
+			
+			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
-		if(email==null || email.value.length<6){
-			alert("올바른 이메일을 입력하세요.");
-			return;
-		}
-		else if(!pattern.test(email.value)){
-			alert("올바른 이메일을 입력하세요.");
-			return;
-		}
-		form.submit();
+			if(email==null || email.value.length<6){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			else if(!pattern.test(email.value)){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			
+			var $form =  $('<form></form>');
+			$form.attr('action', 'login_control.jsp');
+			$form.attr('method', 'post');
+			$form.attr('target', 'iFrm');
+			$form.appendTo('body');
+			
+			var button_email = $('<input type="text" value="email" name="id_email">');
+			var button_password = $('<input type="password" value="password" name="password">');
+ 
+			$form.append(button_signin).append(button_email);
+			$form.submit();
 		
-	}
+			}
 	</script>
   </head>
 
@@ -60,30 +73,49 @@
             <li class="active"><a href="home.jsp">Home</a></li>
             <li><a href="./Projects.jsp">Projects</a></li>
             <li><a href="./Musics.jsp">Musics</a></li>
-			<li><a href="./mypage.jsp">MyPage</a></li>
-          </ul>
+          
 			<%
 			if(session.getAttribute("nickname")==null){
 			%>
-          <form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp">
-            <div class="form-group">
-              <input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" name="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
-			<a href="signup.jsp" class="btn btn-primary" role="button">Sign up</a>
-			</form>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<!--form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp"-->
+					<li>
+						<input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
+					</li>
+					<li>
+						<input type="password" id="password" name="password" placeholder="Password" class="form-control">
+					</li>
+					<li>
+						<button id="button_signin" type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
+					</li>
+					<li>
+						<button onclick="signup_submit();" class="btn btn-primary" type="button">Sign up</button>
+					</li>
+			</ul>
+				<!--/form-->
 			<%}
 			else{
-			%>         
-			<form class="navbar-form navbar-right">
-            <div class="form-group">
-              <h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
-            </div>
-            <a href="sessionLogout.jsp" class="btn btn-success" >Sign Out</a>
-          </form>	
+			%> 
+			</ul>
+			
+				<ul class="nav navbar-nav">
+				<li class="form-group">
+					<a href="./mypage.jsp">MyPage</a>
+				</li>			
+				
+				
+				<!--form class="navbar-form navbar-right"-->
+					<li class="form-group">
+						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
+					</li>
+					<li class="form-group">
+						<a href="sessionLogout.jsp" class="btn btn-success" >Sign Out</a>
+					</li>
+				<!--/form-->	
+				
+				-->
+			</ul>
 			<%
 			}
 			%>
