@@ -40,16 +40,18 @@
 				return;
 			}
 			
+			var form1 = document.createElement('form');
 			var $form =  $('<form></form>');
 			$form.attr('action', 'login_control.jsp');
 			$form.attr('method', 'post');
 			$form.attr('target', 'iFrm');
+			$form.css('visibility', 'hidden');
 			$form.appendTo('body');
 			
-			var button_email = $('<input type="text" value="email" name="id_email">');
-			var button_password = $('<input type="password" value="password" name="password">');
+			var button_email_id = $('<input type="text" value="'+email.value+'" name="id_email" style="visibility:hidden;">');
+			var button_password = $('<input type="password" value="'+password.value+'" name="password" style="visibility:hidden;">');
  
-			$form.append(button_signin).append(button_email);
+			$form.append(button_email_id).append(button_password);
 			$form.submit();
 		
 			}
