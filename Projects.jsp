@@ -193,7 +193,7 @@ try{
 	int i=0;
 	while(rs.next()){
 		int id=rs.getInt("id");
-		int like=rs.getInt("like");
+		int likes=rs.getInt("likes");
 		Date date_create=rs.getDate("date_create");
 		Date date_modify=rs.getDate("date_modify");
 		String image_path=rs.getString("image_path");
@@ -220,10 +220,9 @@ try{
 				<br>
 				<br>
 				<ul class="nav navbar-nav">
-					<li><a class="btn btn-default" href="#" role="button">Likes</a></li>
-					<li><a class="btn btn-default" href="#" role="button">Share</a></li>
 					<li><a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a></li>
-					<li><a class="btn btn-default" href="#" role="button">♥ <%=like %></a></li>
+					<li><a class="btn btn-default" href="./like_control.jsp?project_id=<%=id%>" role="button">Like ♥ <%=likes %></a></li>
+					<li><a class="btn btn-default" href="#" role="button">Share</a></li>
 				
 				</ul>
 			</div>
@@ -232,17 +231,6 @@ try{
 		
 		<%
 		
-		/*
-		out.println(i+"---------------------------------");
-		out.println("id = "+id);
-		out.println("like = "+like);
-		out.println("date_create = "+date_create);
-		out.println("date_modify = "+date_modify);
-		out.println("image_path = "+image_path);
-		out.println("description = "+description);
-		out.println("play_cnt = "+play_cnt);
-		out.println("name = "+name);
-		*/
 		i++;
 	}
 	
