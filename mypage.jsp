@@ -21,23 +21,62 @@
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
 		<script language="javascript">
-	function check_submit()
-	{
-		var form = document.getElementById("form1");
-		var email = document.getElementById("id_email_id");
-		var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		function check_submit()
+			{
+			//var form = document.getElementById("form1");
+			var email = document.getElementById("id_email_id");
+			var password = document.getElementById("password");
+			
+			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
-		if(email==null || email.value.length<6){
-			alert("올바른 이메일을 입력하세요.");
-			return;
-		}
-		else if(!pattern.test(email.value)){
-			alert("올바른 이메일을 입력하세요.");
-			return;
-		}
-		form.submit();
+			if(email==null || email.value.length<6){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			else if(!pattern.test(email.value)){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			
+			var form1 = document.createElement('form');
+			var $form =  $('<form></form>');
+			$form.attr('action', 'login_control.jsp');
+			$form.attr('method', 'post');
+			$form.attr('target', 'iFrm');
+			$form.css('visibility', 'hidden');
+			$form.appendTo('body');
+			
+			var button_email_id = $('<input type="text" value="'+email.value+'" name="id_email" style="visibility:hidden;">');
+			var button_password = $('<input type="password" value="'+password.value+'" name="password" style="visibility:hidden;">');
+ 
+			$form.append(button_email_id).append(button_password);
+			$form.submit();
 		
-	}
+			}
+		function signup_submit(){
+			location.href="./signup.jsp";
+		}
+		function signout_submit(){
+			location.href="./sessionLogout.jsp";
+		}
+		function image_auto_resize(this_s,width,height){ 
+ var ta_image = new Image(); 
+ ta_image.src = this_s.src; 
+  if(!width){this_s.removeAttribute('width'); 
+  this_s.style.width='auto';} 
+  else if(width < ta_image.width){ 
+  this_s.width = width; 
+  }else{ 
+  this_s.width = ta_image.width; 
+  } 
+  if(!height){this_s.removeAttribute('height'); 
+  this_s.style.height='auto';} 
+  else if(height < ta_image.height){ 
+  this_s.height = height; 
+  }else{ 
+  this_s.height = ta_image.height; 
+  } 
+} 
 	</script>
 </head>
 <body>
@@ -57,30 +96,33 @@
 				<li><a href="./home.jsp">Home</a></li>
 				<li><a href="./Projects.jsp">Projects</a></li>
 				<li><a href="./Musics.jsp">Musics</a></li>
-				<li class="active"><a href="./mypage.jsp">MyPage</a></li>
-			</ul>
+				
 			<%
 			if(session.getAttribute("nickname")==null){
-			%>
-          <form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp">
-            <div class="form-group">
-              <input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" name="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
-			<a href="signup.jsp" class="btn btn-primary" role="button">Sign up</a>
-			</form>
-			<%}
+				out.println("<script>alert('잘못된 접근입니다');</script>");
+				out.println("<script>history.go(-1);</script>");
+			}
 			else{
 			%>         
-			<form class="navbar-form navbar-right">
-            <div class="form-group">
-              <h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
-            </div>
-            <a href="sessionLogout.jsp" class="btn btn-success" >Sign Out</a>
-          </form>	
+			</ul>
+			
+				<ul class="nav navbar-nav">
+				<li class="form-group active"">
+					<a href="./mypage.jsp">MyPage</a>
+				</li>			
+				</ul>
+				
+				<ul class="nav navbar-nav navbar-right">
+				<!--form class="navbar-form navbar-right"-->
+					<li class="form-group">
+						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
+					</li>
+					<li class="form-group">
+						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</a>
+					</li>
+				</ul>
+				
+			</ul>	
 			<%
 			}
 			%>
@@ -96,7 +138,7 @@
 				<ul class="nav">
 					<li> <h2>Profile</h2> </li>
 					<li class="active">
-						<img src=<%=session.getAttribute("image") %> alt="user image" class="img-rounded">
+						<img src=<%=session.getAttribute("image") %> alt="user image" class="img-rounded" onload="image_auto_resize(this,130,130);" >
 					</li>
 					<li>
 						<p class="lead"><%=session.getAttribute("nickname")%></p>
@@ -143,7 +185,7 @@ ResultSet rs=null;
 		%>
         <p>
             <a class="btn btn-default" href="Edit.jsp?project_id=<%=project_id%>">
-                <img src=<%=image_path %> alt="Project_image" class="img-rounded">
+                <img src=<%=image_path %> alt="Project_image" class="img-rounded" onload="image_auto_resize(this,130,130);" >
             </a>
         </p>
 		

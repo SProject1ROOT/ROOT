@@ -23,6 +23,7 @@
 
 
 <% String back=(String)session.getAttribute("backpage");
+if(back.equals("/mypage.jsp")){	back="/home.jsp";}
 session.invalidate();%> 
 <center>
     <div class="jumbotron">

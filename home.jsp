@@ -44,7 +44,6 @@
 			var $form =  $('<form></form>');
 			$form.attr('action', 'login_control.jsp');
 			$form.attr('method', 'post');
-			$form.attr('target', 'iFrm');
 			$form.css('visibility', 'hidden');
 			$form.appendTo('body');
 			
@@ -55,6 +54,12 @@
 			$form.submit();
 		
 			}
+		function signup_submit(){
+			location.href="./signup.jsp";
+		}
+		function signout_submit(){
+			location.href="./sessionLogout.jsp";
+		}
 	</script>
   </head>
 
@@ -72,7 +77,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="home.jsp">Home</a></li>
+            <li class="active"><a href="./home.jsp">Home</a></li>
             <li><a href="./Projects.jsp">Projects</a></li>
             <li><a href="./Musics.jsp">Musics</a></li>
           
@@ -83,10 +88,10 @@
 			<ul class="nav navbar-nav navbar-right">
 				<!--form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp"-->
 					<li>
-						<input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
+						<input type="text" id="id_email_id" name="id_email" placeholder="Email">
 					</li>
 					<li>
-						<input type="password" id="password" name="password" placeholder="Password" class="form-control">
+						<input type="password" id="password" name="password" placeholder="Password">
 					</li>
 					<li>
 						<button id="button_signin" type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
@@ -105,15 +110,17 @@
 				<li class="form-group">
 					<a href="./mypage.jsp">MyPage</a>
 				</li>			
+				</ul>
 				
-				
+				<ul class="nav navbar-nav navbar-right">
 				<!--form class="navbar-form navbar-right"-->
 					<li class="form-group">
 						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
 					</li>
 					<li class="form-group">
-						<a href="sessionLogout.jsp" class="btn btn-success" >Sign Out</a>
+						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</a>
 					</li>
+				</ul>
 				<!--/form-->	
 				
 			</ul>

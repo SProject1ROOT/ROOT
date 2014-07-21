@@ -22,23 +22,43 @@
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
 		<script language="javascript">
-	function check_submit()
-	{
-		var form = document.getElementById("form1");
-		var email = document.getElementById("id_email_id");
-		var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+		function check_submit()
+			{
+			//var form = document.getElementById("form1");
+			var email = document.getElementById("id_email_id");
+			var password = document.getElementById("password");
+			
+			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 		
-		if(email==null || email.value.length<6){
-			alert("올바른 이메일을 입력하세요.");
-			return;
-		}
-		else if(!pattern.test(email.value)){
-			alert("올바른 이메일을 입력하세요.");
-			return;
-		}
-		form.submit();
+			if(email==null || email.value.length<6){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			else if(!pattern.test(email.value)){
+				alert("올바른 이메일을 입력하세요.");
+				return;
+			}
+			
+			var form1 = document.createElement('form');
+			var $form =  $('<form></form>');
+			$form.attr('action', 'login_control.jsp');
+			$form.attr('method', 'post');
+			$form.css('visibility', 'hidden');
+			$form.appendTo('body');
+			
+			var button_email_id = $('<input type="text" value="'+email.value+'" name="id_email" style="visibility:hidden;">');
+			var button_password = $('<input type="password" value="'+password.value+'" name="password" style="visibility:hidden;">');
+ 
+			$form.append(button_email_id).append(button_password);
+			$form.submit();
 		
-	}
+			}
+		function signup_submit(){
+			location.href="./signup.jsp";
+		}
+		function signout_submit(){
+			location.href="./sessionLogout.jsp";
+		}
 	</script>
 </head>
 <body>
@@ -58,31 +78,50 @@
 				<li><a href="./home.jsp">Home</a></li>
 				<li><a href="./Projects.jsp">Projects</a></li>
 				<li class="active"><a href="./Musics.jsp">Musics</a></li>
-				<li><a href="./mypage.jsp">MyPage</a></li>
 				
-			</ul>
 			<%
 			if(session.getAttribute("nickname")==null){
 			%>
-          <form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp">
-            <div class="form-group">
-              <input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" name="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
-			<a href="signup.jsp" class="btn btn-primary" role="button">Sign up</a>
-			</form>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<!--form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp"-->
+					<li>
+						<input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
+					</li>
+					<li>
+						<input type="password" id="password" name="password" placeholder="Password" class="form-control">
+					</li>
+					<li>
+						<button id="button_signin" type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>
+					</li>
+					<li>
+						<button onclick="signup_submit();" class="btn btn-primary" type="button">Sign up</button>
+					</li>
+			</ul>
+				<!--/form-->
 			<%}
 			else{
 			%>         
-			<form class="navbar-form navbar-right">
-            <div class="form-group">
-              <h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
-            </div>
-            <a href="sessionLogout.jsp" class="btn btn-success" >Sign Out</a>
-          </form>	
+			</ul>
+			
+				<ul class="nav navbar-nav">
+				<li class="form-group">
+					<a href="./mypage.jsp">MyPage</a>
+				</li>			
+				</ul>
+				
+				<ul class="nav navbar-nav navbar-right">
+				<!--form class="navbar-form navbar-right"-->
+					<li class="form-group">
+						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
+					</li>
+					<li class="form-group">
+						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</a>
+					</li>
+				</ul>
+				
+				
+			</ul>
 			<%
 			}
 			%>
