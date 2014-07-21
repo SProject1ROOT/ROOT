@@ -158,7 +158,7 @@
 					</li>
 					<li>
 						<br>
-						<img src="./image/ProjectIntro.PNG" alt="Projects Intro image" class="img-rounded" onload="image_auto_resize(this,130,130);" >
+						<img src="./image/ProjectIntro.PNG" alt="Projects Intro image" class="img-rounded" onload="image_auto_resize(this,170,130);" >
 					</li>
 					<br>
 					<li>음원을 병합하고 편집하기 위한 프로젝트를 생성하세요. 다양한 사용자들이 참여할 수 있으며 음원 추가 및 병합 기능이 제공됩니다.</li>
