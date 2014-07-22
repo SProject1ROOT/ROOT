@@ -220,8 +220,10 @@ try{
 				<br>
 				<br>
 				<ul class="nav navbar-nav">
+					<li><a class="btn btn-default" href="#" role="button">Likes</a></li>
+					<li><a class="btn btn-default" href="#" role="button">Share</a></li>
 					<li><a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a></li>
-					<li><a class="btn btn-default" href="./like_control.jsp?project_id=<%=id%>" role="button">Like ♥ <%=likes %></a></li>
+					<li><a class="btn btn-default" href="#" role="button">♥ <%=likes %></a></li>
 				
 				</ul>
 			</div>
@@ -230,6 +232,17 @@ try{
 		
 		<%
 		
+		/*
+		out.println(i+"---------------------------------");
+		out.println("id = "+id);
+		out.println("likes = "+likes);
+		out.println("date_create = "+date_create);
+		out.println("date_modify = "+date_modify);
+		out.println("image_path = "+image_path);
+		out.println("description = "+description);
+		out.println("play_cnt = "+play_cnt);
+		out.println("name = "+name);
+		*/
 		i++;
 	}
 	

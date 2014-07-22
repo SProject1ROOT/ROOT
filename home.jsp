@@ -118,7 +118,7 @@
 						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
 					</li>
 					<li class="form-group">
-						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</a>
+						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</button>
 					</li>
 				</ul>
 				<!--/form-->	

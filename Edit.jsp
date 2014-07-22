@@ -166,7 +166,7 @@ function sendSNS(){
 		</div>
 		<div class="col-xs-4">
 			<h2>Comments</h2>
-			<div id="commentAdd">
+			<div id="commentList">
 				<form action="" name="addForm">
 				<ul class="nav navbar-nav">
 				<li><img src=<%=(String)session.getAttribute("image")%> alt="profile_image" class="img-rounded" onload="image_auto_resize(this,35,35)";></li>
@@ -174,7 +174,7 @@ function sendSNS(){
 				<li><input type="button" value="등록" class="btn btn-primary" onclick="addComment()"/></li>
 				</ul>
 				</form>
-				</div>
+			</div>
 				
 		</div>
 	  </div>

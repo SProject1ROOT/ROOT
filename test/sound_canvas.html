@@ -13,8 +13,6 @@ var context;
 var isPlaying = false;
 
 
-var pos = 0;
-
 var startOffset = 0;
 var startTime = 0;
 var timer;
@@ -42,6 +40,7 @@ var Player = new AudioPlayer();
 function AudioPlayer()
 {
 	this.dragdrop_pos = -1;
+	this.pos = 0;
 	this.new_pos = 0;
 	this.currentId = "";
 	this.total_width = 1000;
@@ -86,19 +85,19 @@ function init() {
 				// Play
 				for (var i = 0; i < AudioDataList.length; i++)
 				{
-					if( pos == AudioDataList[i].startPos ) {
+					if( Player.pos == AudioDataList[i].startPos ) {
 						AudioDataList[i].playingBS.start(0);
 						
-					} else if(pos - AudioDataList[i].startPos < 0) {
+					} else if(Player.pos - AudioDataList[i].startPos < 0) {
 						
-						var whenStart = context.currentTime + (AudioDataList[i].startPos - pos) / Player.total_length * Player.total_seconds;
+						var whenStart = context.currentTime + (AudioDataList[i].startPos - Player.pos) / Player.total_length * Player.total_seconds;
 						
 						console.log("whenStart : " + whenStart);
 						AudioDataList[i].playingBS.start(whenStart);
 					
 					} else
-					if(pos - AudioDataList[i].startPos > 0 && AudioDataList[i].startPos + AudioDataList[i].width > pos ) {
-						var offSet = (pos - AudioDataList[i].startPos) / Player.total_length * Player.total_seconds;
+					if(Player.pos - AudioDataList[i].startPos > 0 && AudioDataList[i].startPos + AudioDataList[i].width > Player.pos ) {
+						var offSet = (Player.pos - AudioDataList[i].startPos) / Player.total_length * Player.total_seconds;
 						AudioDataList[i].playingBS.start(0, offSet);
 						
 						console.log("offSet : " + offSet);
@@ -146,7 +145,7 @@ function init() {
 	window.AudioContext = window.AudioContext || window.webkitAudioContext;
 	context = new AudioContext();
 
-	var arr_audio = ['/audio/home.mp3'];//['/audio/home.mp3'];//, '/audio/Dog_Sound.mp3'];
+	var arr_audio = ['/audio/home.mp3', '/audio/Dog_Sound.mp3', '/audio/damienrice.mp3', '/audio/play.mp3', '/audio/Kalimba.mp3'];
 	var bufferLoader = new BufferLoader(
 		context,
 		arr_audio,
@@ -179,7 +178,7 @@ function drawCanvasPlayBar()
 	//$('wavedisplay_play').css('z-index', 2);
 	
 	if( isPlaying ) { 
-		new_pos = pos + ((context.currentTime - startTime) / Player.total_seconds * Player.total_length);
+		new_pos = Player.pos + ((context.currentTime - startTime) / Player.total_seconds * Player.total_length);
 		//console.log("index:" + document.getElementById('wavedisplay_play').style.zIndex);
 		
 		ctx.beginPath();
@@ -278,7 +277,7 @@ function zoomin()
 	
 	<input type="button" value="Play" onclick="alert(pos);">
 	<input type="button" value="Stop" onclick="alert(pos);">
-	<input type="button" value="Zoom in" onclick="zoomin(pos);">
+	<input type="button" value="Zoom in" onclick="zoomin();">
 	<input type="button" value="Zoom out" onclick="alert(pos);">
 	<input type="button" value="make" onclick="test()">
 	
@@ -287,11 +286,11 @@ function zoomin()
 	<canvas id="playbar" height="80" width="1" style="position: absolute; left: 10; top: 0; z-index: 1000; background-color: #ff0000; visibility: hidden;" ></canvas>
 	
 	<br><br><br>
-	<div id="canvas_container" style="position: relative; float: left; width: 1005px; height:350px; overflow-x:scroll; " >
+	<div id="canvas_container" style="position: relative; float: left; width: 1005px; height:650px; overflow-x:scroll; " >
 		<!--canvas id="wavedisplay1" height="100" width="400" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas-->
 		<!--canvas id="wavedisplay2" height="100" width="400" style="position: absolute; left: 0; top: 100; z-index: 1;"></canvas-->
 		
-		<canvas id="wavedisplay_play" class="container" height="300" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent; border:1px solid silver;"></canvas>
+		<canvas id="wavedisplay_play" class="container" height="600" width="1000" style="position: absolute; left: 0; top: 0; z-index: 0; background:transparent; border:1px solid silver;"></canvas>
 		
 		<script type='text/javascript'>
 			/*canvas = document.getElementById('wavedisplay_play');
