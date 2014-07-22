@@ -88,10 +88,10 @@
 			<ul class="nav navbar-nav navbar-right">
 				<!--form id="form1" class="navbar-form navbar-right" method="post" action="login_control.jsp"-->
 					<li>
-						<input type="text" id="id_email_id" name="id_email" placeholder="Email">
+						<input type="text" id="id_email_id" name="id_email" placeholder="Email" class="form-control">
 					</li>
 					<li>
-						<input type="password" id="password" name="password" placeholder="Password">
+						<input type="password" id="password" name="password" placeholder="Password" class="form-control">
 					</li>
 					<li>
 						<button id="button_signin" type="button" class="btn btn-success" onclick="check_submit();">Sign in</button>

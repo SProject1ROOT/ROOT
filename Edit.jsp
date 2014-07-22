@@ -96,11 +96,6 @@ function sendSNS(){
   str_href = $(this).attr("href");
   $(this).attr("href", str_href + "?url=" + encodeURIComponent(str_u) + "&text=" + encodeURIComponent(str_t));
  });
- $("#sns_me2day").click(function(){
-  str_href = $(this).attr("href");
-  str_t = '"' + str_t + '"';
-  $(this).attr("href", str_href + "?new_post[body]=" + encodeURIComponent(str_t) + ":" + encodeURIComponent(str_u));
- });
 }
 
 	</script>
@@ -119,9 +114,12 @@ function sendSNS(){
 	PreparedStatement pstmt = null;
 	
 	ResultSet rs=null;
-		
-		System.out.println("id : " + request.getParameter("project_id"));
-	if(request.getParameter("project_id").equals("insert")){
+	
+	if(request.getParameter("project_id")==null){
+		out.println("<script>alert('project_id = null');</script>");
+		out.println("<script>history.go(-1);</script>");
+	}
+	else if(request.getParameter("project_id").equals("insert")){
 	System.out.println("If 문");
 				out.println("<script>alert('프로젝트 생성 필요');</script>");
 				out.println("<script>history.go(-1);</script>");
@@ -181,9 +179,8 @@ function sendSNS(){
 		</div>
 	  </div>
 	  <a target="blank" id="sns_facebook" href="http://www.facebook.com/share.php" title="페이스북에 이 페이지 공유하기"  class="btn btn-default">Facebook Share</a>
-	  <a target="blank" id="sns_facebook" href="http://www.facebook.com/share.php" title="페이스북에 이 페이지 공유하기"  class="btn btn-default">Facebook Share</a>
-	  <a target="blank" id="sns_facebook" href="http://www.facebook.com/share.php" title="페이스북에 이 페이지 공유하기"  class="btn btn-default">Facebook Share</a>
-    </div>
+	  <a target="blank" id="sns_twitter" href="http://twitter.com/share" title="트위터에 이 페이지 공유하기"  class="btn btn-default">Twitter Share</a>
+	  </div>
 	
 					
 
