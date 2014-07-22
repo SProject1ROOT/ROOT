@@ -36,12 +36,6 @@ try{
 		,
 <%
 		}
-		System.out.println("id: "+rs.getInt("id"));
-		System.out.println("email: "+rs.getString("email"));
-		System.out.println("nickname: "+rs.getString("nickname"));
-		System.out.println("image: "+rs.getString("image"));
-		System.out.println("date: "+rs.getTimestamp("date").toString());
-		System.out.println("comment: "+rs.getString("comment"));
 %>
 	{
 		id: <%=rs.getInt("id")%>,

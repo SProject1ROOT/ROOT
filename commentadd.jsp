@@ -12,13 +12,13 @@
 	int user_id=Integer.parseInt((String)session.getAttribute("uid"));
 	
 	java.util.Date now=new java.util.Date();
-	Date now_date=new Date(now.getTime());
+	Timestamp now_date=new Timestamp(now.getTime());
 	
 	System.out.println("comment : "+comment);
 	System.out.println("project_id : "+project_id);
 	System.out.println("user_id : "+user_id);
 	System.out.println("now : "+now.toString());
-	System.out.println("now_date : "+now_date.toString());
+	System.out.println("now_date : "+now_date);
 		
 	Connection conn = null;                                        // null로 초기화 한다.
 	PreparedStatement pstmt = null;
@@ -37,7 +37,7 @@
 		String sql="insert into project_comment(project_id,date,comment,user_id) values(?,?,?,?)";
 		pstmt=conn.prepareStatement(sql);
 		pstmt.setInt(1,project_id);
-		pstmt.setDate(2,now_date);
+		pstmt.setTimestamp(2,now_date);
 		pstmt.setString(3,comment);
 		pstmt.setInt(4,user_id);
 	

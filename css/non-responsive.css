@@ -81,9 +81,9 @@ body {
 .navbar-nav > li > a {
   padding: 10px;
   margin-top : 5px;
-  margin-bottom : 5px;
-  margin-left: 10px;
-  margin-right: 10px;
+  //margin-bottom : 5px;
+  //margin-left: 10px;
+  //margin-right: 10px;
 }
 
 /* Redeclare since we override the float above */

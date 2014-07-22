@@ -136,6 +136,12 @@ function makeCommentView(comment){
 }
 function addComment() {
 	var comment = document.addForm.comment.value;
+	if(comment.length>=50){ 
+		alert("댓글은 50자 이하로 입력하세요");
+		document.addForm.comment.value = '';
+		return;
+	}
+	
 	var params = "project_id=<%=id%>&comment="+encodeURIComponent(comment);
 	new ajax.xhr.Request('commentadd.jsp', params, addResult, 'POST');
 }
@@ -154,10 +160,8 @@ function addResult(req) {
 				var commentDiv = makeCommentView(comment);
 				listDiv.appendChild(commentDiv);
 				
-				document.addForm.name.value = '';
-				document.addForm.content.value = '';
+				document.addForm.comment.value = '';
 				
-				alert("등록했습니다!["+comment.id+"]");
 			} else if (code == 'fail') {
 				var message = xmlDoc.getElementsByTagName('message')
 									.item(0).firstChild.nodeValue;
@@ -218,12 +222,10 @@ function sendSNS(){
 				
 		</div>
 	  </div>
-	  <a target="blank" id="sns_facebook" href="http://www.facebook.com/share.php" title="페이스북에 이 페이지 공유하기"  class="btn btn-default">Facebook Share</a>
-	  <a target="blank" id="sns_twitter" href="http://twitter.com/share" title="트위터에 이 페이지 공유하기"  class="btn btn-default">Twitter Share</a>
 	  </div>
+	<a target="blank" id="sns_facebook" href="http://www.facebook.com/share.php" title="페이스북에 이 페이지 공유하기"  class="btn btn-default"><span class="glyphicon glyphicon-share"></span> Facebook</a>
+	<a target="blank" id="sns_twitter" href="http://twitter.com/share" title="트위터에 이 페이지 공유하기"  class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span> Twitter</a>
 	
-					
-
 
 <%}%>
 

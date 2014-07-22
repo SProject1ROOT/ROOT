@@ -23,62 +23,76 @@
 			<script src="../../assets/js/respond.min.js"></script>
 		<![endif]-->
 	<script language="javascript">
-		function check_submit()
-			{
-			//var form = document.getElementById("form1");
-			var email = document.getElementById("id_email_id");
-			var password = document.getElementById("password");
-			
-			var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-		
-			if(email==null || email.value.length<6){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			else if(!pattern.test(email.value)){
-				alert("올바른 이메일을 입력하세요.");
-				return;
-			}
-			
-			var form1 = document.createElement('form');
-			var $form =  $('<form></form>');
-			$form.attr('action', 'login_control.jsp');
-			$form.attr('method', 'post');
-			$form.css('visibility', 'hidden');
-			$form.appendTo('body');
-			
-			var button_email_id = $('<input type="text" value="'+email.value+'" name="id_email" style="visibility:hidden;">');
-			var button_password = $('<input type="password" value="'+password.value+'" name="password" style="visibility:hidden;">');
+function check_submit()
+	{
+	//var form = document.getElementById("form1");
+	var email = document.getElementById("id_email_id");
+	var password = document.getElementById("password");
+	
+	var pattern=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+	if(email==null || email.value.length<6){
+		alert("올바른 이메일을 입력하세요.");
+		return;
+	}
+	else if(!pattern.test(email.value)){
+		alert("올바른 이메일을 입력하세요.");
+		return;
+	}
+	
+	var form1 = document.createElement('form');
+	var $form =  $('<form></form>');
+	$form.attr('action', 'login_control.jsp');
+	$form.attr('method', 'post');
+	$form.css('visibility', 'hidden');
+	$form.appendTo('body');
+	
+	var button_email_id = $('<input type="text" value="'+email.value+'" name="id_email" style="visibility:hidden;">');
+	var button_password = $('<input type="password" value="'+password.value+'" name="password" style="visibility:hidden;">');
  
-			$form.append(button_email_id).append(button_password);
-			$form.submit();
-		
-			}
-			
-		function signup_submit(){
-			location.href="./signup.jsp";
-		}
-		function signout_submit(){
-			location.href="./sessionLogout.jsp";
-		}
-				function image_auto_resize(this_s,width,height){ 
- var ta_image = new Image(); 
- ta_image.src = this_s.src; 
-  if(!width){this_s.removeAttribute('width'); 
-  this_s.style.width='auto';} 
-  else if(width < ta_image.width){ 
-  this_s.width = width; 
-  }else{ 
-  this_s.width = ta_image.width; 
-  } 
-  if(!height){this_s.removeAttribute('height'); 
-  this_s.style.height='auto';} 
-  else if(height < ta_image.height){ 
-  this_s.height = height; 
-  }else{ 
-  this_s.height = ta_image.height; 
-  } 
+	$form.append(button_email_id).append(button_password);
+	$form.submit();
+
+	}
+	
+function signup_submit(){
+	location.href="./signup.jsp";
+}
+function signout_submit(){
+	location.href="./sessionLogout.jsp";
+}
+function image_auto_resize(this_s,width,height){ 
+	var ta_image = new Image(); 
+	ta_image.src = this_s.src; 
+	if(!width){
+		this_s.removeAttribute('width'); 
+		this_s.style.width='auto';
+	} 
+	else if(width < ta_image.width){ 
+		this_s.width = width; 
+	}
+	else{ 
+		this_s.width = ta_image.width; 
+	} 
+	if(!height){
+		this_s.removeAttribute('height'); 
+		this_s.style.height='auto';
+	} 
+	else if(height < ta_image.height){ 
+		this_s.height = height; 
+	}
+	else{ 
+		this_s.height = ta_image.height; 
+	} 
 } 
+window.onload=function(){
+	loadLikeNum();
+}
+function loadLikeNum()(){
+	var params="project_id= &user_id=<%=Integer.parseInt((String)session.getAttribute("uid"))%>";
+	new ajax.xhr.Request("like_control.jsp",params,loadLikeNumResult,'GET');
+}
+
 	</script>
 	</head>
 <body>
@@ -209,23 +223,23 @@ try{
 			</div>
 			<div class="col-xs-4 navbar-collapse collapse">
 			
-				<ul class="nav navbar-nav">
-					<a href="Edit.jsp?project_id=<%=id%>"><%=name%></a>
+				<ul class="nav navbar-nav nav-pills">
+					<li><a href="Edit.jsp?project_id=<%=id%>"><%=name%></a></li>
 				</ul>
 				<br>
 				<br>
-				<ul class="nav navbar-nav">
-					<small><%=description %></small>
-				</ul>
 				<br>
-				<br>
-				<ul class="nav navbar-nav">
-					<li><a class="btn btn-default" href="#" role="button">Likes</a></li>
-					<li><a class="btn btn-default" href="#" role="button">Share</a></li>
-					<li><a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a></li>
-					<li><a class="btn btn-default" href="#" role="button">♥ <%=likes %></a></li>
 				
+				<ul class="nav navbar-nav">
+					<li><small><%=description %></small></li>
 				</ul>
+				<br>
+				<div id="likeNum">
+				<ul class="nav navbar-nav">
+					<li><button class="btn btn-default" href="#" role="button"><span class="glyphicon glyphicon-heart"></span> <%=likes %></button></li>
+					<li><button class="btn btn-default" href="#" role="button"><span class="glyphicon glyphicon-play"></span> <%=play_cnt %></button></li>
+				</ul>
+				</div>
 			</div>
 		</div>
 	</div>
