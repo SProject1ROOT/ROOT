@@ -59,6 +59,22 @@
 		function signout_submit(){
 			location.href="./sessionLogout.jsp";
 		}
+		function sendSNS(){
+ var str_href;
+ var str_u = location.href;
+ // 타이틀 태그 안에 > 로 depth표시가 되어 있기 때문에 replace
+ var str_t = $("title").html().replaceAll(" &gt; ", ">");
+ 
+ $("#sns_facebook").click(function(){
+  str_href = $(this).attr("href");
+  $(this).attr("href", str_href + "?u=" + encodeURIComponent(str_u) + "&t=" + encodeURIComponent(str_t));
+ });
+ $("#sns_twitter").click(function(){
+  str_href = $(this).attr("href");
+  $(this).attr("href", str_href + "?url=" + encodeURIComponent(str_u) + "&text=" + encodeURIComponent(str_t));
+ });
+}
+
 	</script>
 </head>
 <body>
@@ -105,17 +121,17 @@
 			</ul>
 			
 				<ul class="nav navbar-nav">
-				<li class="form-group">
+				<li>
 					<a href="./mypage.jsp">MyPage</a>
 				</li>			
 				</ul>
 				
 				<ul class="nav navbar-nav navbar-right">
 				<!--form class="navbar-form navbar-right"-->
-					<li class="form-group">
-						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
+					<li>
+						<h3><font color="white"><%=session.getAttribute("nickname")%></font></h3>
 					</li>
-					<li class="form-group">
+					<li>
 						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</a>
 					</li>
 				</ul>
@@ -204,18 +220,18 @@ try{
 		<div class="col-xs-12 col-xs-9">
 		<br>
 				<div class="row">
-					<a href="Edit.jsp?id="+<%=id %>><%=name%></a>
+					<a href="Edit.jsp?id="+<%=id %> class="btn btn-primary btn-lg"><%=name%></a>
 				</div>
 				
 				<div class="row">
 					<small><%=description %></small>
 				</div>
-				<br>
 			
 				<div class="row">
-					<a class="btn btn-default" href="#" role="button">Add to Music Cart</a>
-					<a class="btn btn-default" href="#" role="button">Share</a>
-					<a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a>
+					<a class="btn btn-default" href="#" role="button"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+					<a target="blank" id="sns_facebook" href="http://www.facebook.com/share.php" title="페이스북에 이 페이지 공유하기"  class="btn btn-default"><span class="glyphicon glyphicon-share"></span> Facebook</a>
+					<a target="blank" id="sns_twitter" href="http://twitter.com/share" title="트위터에 이 페이지 공유하기"  class="btn btn-default"><span class="glyphicon glyphicon-share"></span> Twitter</a>
+					<a class="btn btn-default" href="#" role="button"><span class="glyphicon glyphicon-play"></span> <%=play_cnt %></a>
 				
 				</div>
 	</div>

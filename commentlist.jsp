@@ -16,9 +16,10 @@ try{
 	Class.forName("com.mysql.jdbc.Driver");                       // 데이터베이스와 연동하기 위해 DriverManager에 등록한다.
 	conn=DriverManager.getConnection(db_url,db_id,db_pw); 
 	
-	String sql="select * from project_comment where project_id=? order by date asc";
+	String sql="select * from users, project_comment where project_comment.project_id=? and project_comment.user_id=users.uid order by date asc";
+
 	pstmt = conn.prepareStatement(sql);
-	pstmt.setString(1,(String)session.getAttribute("uid"));
+	pstmt.setInt(1,1);
 	rs=pstmt.executeQuery();
 	
 %>
@@ -36,7 +37,10 @@ try{
 		}
 %>
 	{
-		id:	<%=rs.getInt("user_id")%>,
+		id: <%=rs.getInt("uid")%>,
+		email: '<%=Util.toJS(rs.getString("email"))%>',
+		nickname: '<%=Util.toJS(rs.getString("nickname"))%>',
+		image: '<%=Util.toJS(rs.getString("image"))%>',
 		date: '<%=Util.toJS(rs.getTimestamp("date").toString())%>',
 		comment: '<%=Util.toJS(rs.getString("comment"))%>'
 	}

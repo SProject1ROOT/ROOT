@@ -120,17 +120,17 @@
 			</ul>
 			
 				<ul class="nav navbar-nav">
-				<li class="form-group active"">
-					<a href="./mypage.jsp">MyPage</a>
+				<li class="active">
+					<a href="./mypage.jsp" >MyPage</a>
 				</li>			
 				</ul>
 				
 				<ul class="nav navbar-nav navbar-right">
 				<!--form class="navbar-form navbar-right"-->
-					<li class="form-group">
-						<h4><font color="white"><%=session.getAttribute("nickname")%></font></h4>
+					<li>
+						<h3><font color="white"><%=session.getAttribute("nickname")%></font></h3>
 					</li>
-					<li class="form-group">
+					<li>
 						<button onclick="signout_submit();" class="btn btn-success" type="button">Sign Out</a>
 					</li>
 				</ul>

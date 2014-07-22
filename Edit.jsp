@@ -72,7 +72,10 @@ function loadCommentResult(req){
 function makeCommentView(comment){
 	var commentDiv=document.createElement('div');
 	commentDiv.setAttribute('id','c'+comment.id);
-	var html='<strong>'+comment.id+'</strong><br/>'+comment.date+'<br/>'+comment.comment+'<br/>';
+	
+	var html='<img src='+comment.image+' onload=image_auto_resize(this,35,35)>';
+	html=html+'<strong> '+comment.email+' ('+comment.nickname+')'+'</strong><br/>';
+	html=html+'<small>'+comment.date+'</small><br/>'+comment.comment+'<br/>';
 	
 	commentDiv.innerHTML=html;
 	commentDiv.comment=comment;
@@ -167,13 +170,14 @@ function sendSNS(){
 		<div class="col-xs-4">
 			<h2>Comments</h2>
 			<div id="commentList">
-				<form action="" name="addForm">
+				<form action="" name="addForm"></form>
 				<ul class="nav navbar-nav">
 				<li><img src=<%=(String)session.getAttribute("image")%> alt="profile_image" class="img-rounded" onload="image_auto_resize(this,35,35)";></li>
 				<li><input type="text" id="id_email_id" name="id_email" placeholder="댓글을 입력하세요..." class="form-control"></li>
 				<li><input type="button" value="등록" class="btn btn-primary" onclick="addComment()"/></li>
+				
 				</ul>
-				</form>
+				
 			</div>
 				
 		</div>
