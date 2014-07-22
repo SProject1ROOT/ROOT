@@ -57,13 +57,7 @@
 		
 		if(rs.next()){
 			System.out.println("이미 눌렀땅");
-			%>
-			<script>
-			alert('이미 좋아요를 누르셨습니다.');
-			history.go(-1);
-			</script>
-			<%
-			System.out.println("스크립트 왜지나가 ㅠ.ㅠ");
+			
 		}
 		else{
 		System.out.println("Insert----------------------------");

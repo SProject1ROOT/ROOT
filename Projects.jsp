@@ -222,7 +222,6 @@ try{
 				<ul class="nav navbar-nav">
 					<li><a class="btn btn-default" href="#" role="button">▶ <%=play_cnt %></a></li>
 					<li><a class="btn btn-default" href="./like_control.jsp?project_id=<%=id%>" role="button">Like ♥ <%=likes %></a></li>
-					<li><a class="btn btn-default" href="#" role="button">Share</a></li>
 				
 				</ul>
 			</div>

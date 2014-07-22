@@ -8,6 +8,12 @@
 <!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
 <meta name="description" content="">
 <meta name="author" content="">
+
+
+<meta http-equiv="Cache-Control" content="no-cache"/> 
+<meta http-equiv="Expires" content="0"/> 
+<meta http-equiv="Pragma" content="no-cache"/>
+
 <link rel="shortcut icon" href="../../assets/ico/favicon.png">
 <title>Projects</title>
 <!-- Bootstrap core CSS -->
@@ -77,10 +83,17 @@
   this_s.height = ta_image.height; 
   } 
 } 
+
 	</script>
 </head>
 <body>
 	<%session.setAttribute("backpage",request.getRequestURI());%>
+	<% 
+ response.setHeader("Cache-Control","no-cache");
+ response.setHeader("Pragma","no-cache"); 
+ response.setDateHeader("Expires",0);
+%>
+
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header">
