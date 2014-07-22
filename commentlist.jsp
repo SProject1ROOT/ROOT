@@ -18,8 +18,9 @@ try{
 	
 	String sql="select * from users, project_comment where project_comment.project_id=? and project_comment.user_id=users.uid order by date asc";
 
+	int project_id=Integer.parseInt((String)request.getParameter("project_id"));
 	pstmt = conn.prepareStatement(sql);
-	pstmt.setInt(1,1);
+	pstmt.setInt(1,project_id);
 	rs=pstmt.executeQuery();
 	
 %>
@@ -35,9 +36,15 @@ try{
 		,
 <%
 		}
+		System.out.println("id: "+rs.getInt("id"));
+		System.out.println("email: "+rs.getString("email"));
+		System.out.println("nickname: "+rs.getString("nickname"));
+		System.out.println("image: "+rs.getString("image"));
+		System.out.println("date: "+rs.getTimestamp("date").toString());
+		System.out.println("comment: "+rs.getString("comment"));
 %>
 	{
-		id: <%=rs.getInt("uid")%>,
+		id: <%=rs.getInt("id")%>,
 		email: '<%=Util.toJS(rs.getString("email"))%>',
 		nickname: '<%=Util.toJS(rs.getString("nickname"))%>',
 		image: '<%=Util.toJS(rs.getString("image"))%>',
